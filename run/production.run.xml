@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="production" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="MainApp" />
+    <module name="$PROJECT_NAME$.main" />
+    <option name="VM_PARAMETERS" value="-ea -Dappname=$PROJECT_NAME$ -Dappprofile=production -Dconfigdir=conf -Dconfigfile=config.ini" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,3 @@
+rootProject.name = rootProject.projectDir.getName()
+include 'VCommon'
+project(':VCommon').projectDir = file('../VCommon')
