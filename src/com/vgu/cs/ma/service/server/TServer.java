@@ -12,10 +12,6 @@ import com.vgu.cs.common.thrift.ThriftServer;
 public class TServer {
 
     public boolean setupAndStart() {
-        ThriftServer server = new ThriftServer("main");
-        COVIDDSService.Processor<COVIDDSService.Iface> processor = new COVIDDSService.Processor<>(new COVIDDSServiceHandler());
-        server.registerProcessor(processor);
-
-        return server.start();
+        return true;
     }
 }

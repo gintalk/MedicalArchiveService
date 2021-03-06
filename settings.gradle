@@ -1,3 +1,4 @@
 rootProject.name = rootProject.projectDir.getName()
-include 'VCommon'
+include 'VCommon', 'VEngine'
 project(':VCommon').projectDir = file('../VCommon')
+project(':VEngine').projectDir = file('../VEngine')
