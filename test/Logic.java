@@ -5,22 +5,18 @@
  * @author namnh16 on 04/03/2021
  */
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
-import com.vgu.cs.engine.dal.PersonDal;
 import com.vgu.cs.engine.entity.PersonEntity;
-import com.vgu.cs.ma.service.model.business.OMOPModel;
+import com.vgu.cs.ma.service.model.business.FhirOmopModel;
+import com.vgu.cs.ma.service.model.business.PatientModel;
+import com.vgu.cs.ma.service.model.data.PersonDModel;
 import org.hl7.fhir.dstu3.model.Patient;
 
 public class Logic {
 
     public static void main(String[] args) {
-        FhirContext fhirContext = FhirContext.forDstu3();
-        IParser parser = fhirContext.newJsonParser();
+        PersonEntity person = PersonDModel.INSTANCE.getPerson(2);
+        Patient patient = PatientModel.INSTANCE.constructFhir(person);
 
-        PersonEntity person = PersonDal.INSTANCE.get(1);
-
-        Patient patient = OMOPModel.INSTANCE.toFhir(person);
-        System.out.println(parser.encodeResourceToString(patient));
+        System.out.println(FhirOmopModel.INSTANCE.getFhirContext().newJsonParser().setPrettyPrint(true).encodeResourceToString(patient));
     }
 }

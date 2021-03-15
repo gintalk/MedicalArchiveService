@@ -11,6 +11,7 @@ import com.vgu.cs.common.logger.VLogger;
 import com.vgu.cs.engine.dal.ConceptDal;
 import com.vgu.cs.engine.entity.ConceptEntity;
 import org.apache.logging.log4j.Logger;
+import org.hl7.fhir.dstu3.model.Base;
 
 public class ConceptDModel {
 

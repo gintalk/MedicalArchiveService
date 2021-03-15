@@ -7,92 +7,233 @@ package com.vgu.cs.ma.service.model.business;
  * @author namnh16 on 05/03/2021
  */
 
+import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.dal.LocationDal;
 import com.vgu.cs.engine.entity.ConceptEntity;
 import com.vgu.cs.engine.entity.LocationEntity;
+import com.vgu.cs.engine.entity.PersonEntity;
+import com.vgu.cs.engine.entity.ProviderEntity;
 import com.vgu.cs.ma.service.model.data.ConceptDModel;
+import com.vgu.cs.ma.service.model.data.ProviderDModel;
 import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class PatientModel {
+public class PatientModel extends FhirOmopModel {
 
     public static final PatientModel INSTANCE = new PatientModel();
-    private final ProviderModel PROVIDER_MODEL;
+    private final ProviderDModel PROVIDER_DM;
     private final String PATIENT_IDENTIFIER_SYSTEM;
     private final String US_CORE_RACE_URL;
     private final String US_CORE_ETHNICITY_URL;
 
     private PatientModel() {
-        PROVIDER_MODEL = ProviderModel.INSTANCE;
+        super();
+
+        PROVIDER_DM = ProviderDModel.INSTANCE;
         PATIENT_IDENTIFIER_SYSTEM = "https://www.some-mrn-center.com/mrn-lookup/v1.2";
         US_CORE_RACE_URL = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race";
         US_CORE_ETHNICITY_URL = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity";
     }
 
-    public Identifier getIdentifier(int personId) {
-        return new Identifier().setSystem(PATIENT_IDENTIFIER_SYSTEM).setValue(String.valueOf(personId));
+    public Patient constructFhir(PersonEntity person) {
+        Patient patient = new Patient();
+
+        Identifier identifierFromSourceValue = getIdentifierFromSourceValue(person.person_source_value);
+        if (identifierFromSourceValue != null) {
+            patient.addIdentifier(identifierFromSourceValue);
+        }
+
+        Date birthDate = getBirthdate(person.year_of_birth, person.month_of_birth, person.day_of_birth);
+        if (birthDate != null) {
+            patient.setBirthDate(birthDate);
+        }
+
+        Reference generalPractitioner = getGeneralPractitionerReference(person.provider_id);
+        if (generalPractitioner != null) {
+            patient.addGeneralPractitioner(generalPractitioner);
+        }
+
+        patient.setGender(getGender(person.gender_concept_id));
+
+        Address address = getAddress(person.location_id);
+        if (address != null) {
+            patient.addAddress(address);
+        }
+
+        Extension raceExtension = getRaceExtension(person.race_concept_id, person.race_source_value);
+        if (raceExtension != null) {
+            patient.addExtension(raceExtension);
+        }
+
+        Extension ethnicityExtension = getEthnicityExtension(person.ethnicity_concept_id, person.ethnicity_source_value);
+        if (ethnicityExtension != null) {
+            patient.addExtension(ethnicityExtension);
+        }
+
+        return patient;
+    }
+
+    public Identifier getIdentifierFromSourceValue(String personSourceValue) {
+        if (StringUtils.isNullOrEmpty(personSourceValue)) {
+            return null;
+        }
+
+        Identifier identifier = new Identifier();
+
+        String[] sourceValues = personSourceValue.trim().split("\\^");
+        if (sourceValues.length == 1) {
+            identifier.setValue(sourceValues[0]);
+        } else {
+            String fhirSystem = FO_VOCAB_DM.getFhirSystemName(sourceValues[0]);
+
+            StringBuilder valueBuilder = new StringBuilder();
+            if (sourceValues.length > 2) {
+                String code = sourceValues[1];
+                CodeableConcept typeCodeable = new CodeableConcept();
+                Coding typeCoding = new Coding();
+
+                if ("NONE".equalsIgnoreCase(fhirSystem)) {
+                    typeCoding.setSystem(fhirSystem);
+                }
+                typeCoding.setCode(code);
+                typeCodeable.addCoding(typeCoding);
+                identifier.setType(typeCodeable);
+
+                for (int i = 2; i < sourceValues.length; i++) {
+                    valueBuilder.append(sourceValues[i]);
+                }
+            } else {
+                if ("NONE".equalsIgnoreCase(fhirSystem)) {
+                    identifier.setSystem(fhirSystem);
+                }
+                valueBuilder.append(sourceValues[1]);
+            }
+            identifier.setValue(valueBuilder.toString());
+        }
+
+        return identifier;
     }
 
     public Reference getGeneralPractitionerReference(int providerId) {
-        return new Reference().setIdentifier(PROVIDER_MODEL.getIdentifier(providerId));
+        if (providerId < 0) {
+            return null;
+        }
+
+        ProviderEntity provider = PROVIDER_DM.getProvider(providerId);
+        if (provider == null) {
+            return null;
+        }
+
+        Reference reference = new Reference(new IdType(providerId));
+        if (!StringUtils.isNullOrEmpty(provider.provider_name)) {
+            reference.setDisplay(provider.provider_name);
+        }
+        return reference;
     }
 
-    public Enumerations.AdministrativeGender getGender(int genderConceptId) {
+    public AdministrativeGender getGender(int genderConceptId) {
         ConceptEntity genderConcept = ConceptDModel.INSTANCE.getConcept(genderConceptId);
         if (genderConcept == null) {
-            return Enumerations.AdministrativeGender.NULL;
+            return AdministrativeGender.NULL;
         }
 
-        if ("MALE".equalsIgnoreCase(genderConcept.concept_name)) {
-            return Enumerations.AdministrativeGender.MALE;
-        }
-        if ("FEMALE".equalsIgnoreCase(genderConcept.concept_name)) {
-            return Enumerations.AdministrativeGender.FEMALE;
-        }
-        return Enumerations.AdministrativeGender.OTHER;
+        return AdministrativeGender.fromCode(genderConcept.concept_name.toLowerCase());
     }
 
     public Date getBirthdate(int yearOfBirth, int monthOfBirth, int dayOfBirth) {
+        if (yearOfBirth < 0 || monthOfBirth < 0 || dayOfBirth < 0) {
+            return null;
+        }
+
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, yearOfBirth);
-        calendar.set(Calendar.MONTH, monthOfBirth);
+        calendar.set(Calendar.MONTH, monthOfBirth - 1);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfBirth);
 
         return calendar.getTime();
     }
 
     public Address getAddress(int locationId) {
+        if (locationId < 0) {
+            return null;
+        }
+
         LocationEntity location = LocationDal.INSTANCE.get(locationId);
+        if (location == null) {
+            return null;
+        }
 
         Address address = new Address();
-        address.addLine(location.address_1 + " " + location.address_2);
+        address.setUse(Address.AddressUse.HOME);
         address.setCity(location.city);
         address.setState(location.state);
         address.setPostalCode(location.zip);
         address.setCountry(location.county);
+        if (!StringUtils.isNullOrEmpty(location.address_1) && !StringUtils.isNullOrEmpty(location.address_2)) {
+            address.addLine(location.address_1 + " " + location.address_2);
+        } else if (!StringUtils.isNullOrEmpty(location.address_1)) {
+            address.addLine(location.address_1);
+        } else if (!StringUtils.isNullOrEmpty(location.address_2)) {
+            address.addLine(location.address_2);
+        }
 
         return address;
     }
 
-    public Extension getRaceExtension(int raceConceptId) {
+    public Extension getRaceExtension(int raceConceptId, String raceSourceValue) {
         ConceptEntity raceConcept = ConceptDModel.INSTANCE.getConcept(raceConceptId);
+        if (raceConcept == null && StringUtils.isNullOrEmpty(raceSourceValue)) {
+            return null;
+        }
 
-        Extension extension = new Extension();
-        extension.setUrl(US_CORE_RACE_URL);
-        extension.setValue(new StringType(raceConcept.concept_name));
+        Coding raceCoding;
+        if (raceConcept == null) {
+            raceCoding = FO_CODE_DM.getFhirCodingFromOmopSourceValue(raceSourceValue);
+        } else {
+            raceCoding = FO_CODE_DM.getFhirCodingFromOmopConcept(raceConceptId);
+        }
 
-        return extension;
+        Extension ombCatExtension = new Extension();
+        ombCatExtension.setUrl("ombCategory");
+        ombCatExtension.setValue(raceCoding);
+
+        Extension textExtension = new Extension();
+        textExtension.setUrl("text");
+        textExtension.setValue(new StringType(raceCoding.getDisplay()));
+
+        Extension raceExtension = new Extension();
+        raceExtension.setUrl(US_CORE_RACE_URL).addExtension(ombCatExtension).addExtension(textExtension);
+
+        return raceExtension;
     }
 
-    public Extension getEthnicityExtension(int ethnicityConceptId) {
+    public Extension getEthnicityExtension(int ethnicityConceptId, String ethnicitySourceValue) {
         ConceptEntity ethnicityConcept = ConceptDModel.INSTANCE.getConcept(ethnicityConceptId);
+        if (ethnicityConcept == null && StringUtils.isNullOrEmpty(ethnicitySourceValue)) {
+            return null;
+        }
 
-        Extension extension = new Extension();
-        extension.setUrl(US_CORE_ETHNICITY_URL);
-        extension.setValue(new StringType(ethnicityConcept.concept_name));
+        Coding ethnicityCoding;
+        if (ethnicityConcept == null) {
+            ethnicityCoding = FO_CODE_DM.getFhirCodingFromOmopSourceValue(ethnicitySourceValue);
+        } else {
+            ethnicityCoding = FO_CODE_DM.getFhirCodingFromOmopConcept(ethnicityConceptId);
+        }
 
-        return extension;
+        Extension ombCatExtension = new Extension();
+        ombCatExtension.setUrl("ombCategory");
+        ombCatExtension.setValue(ethnicityCoding);
+
+        Extension textExtension = new Extension();
+        textExtension.setUrl("text");
+        textExtension.setValue(new StringType(ethnicityCoding.getDisplay()));
+
+        Extension ethnicityExtension = new Extension();
+        ethnicityExtension.setUrl(US_CORE_ETHNICITY_URL).addExtension(ombCatExtension).addExtension(textExtension);
+
+        return ethnicityExtension;
     }
 }
