@@ -1,1 +1,3 @@
 MedicalArchiveService
+
+Handles application logic
