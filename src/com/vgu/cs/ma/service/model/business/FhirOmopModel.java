@@ -18,15 +18,13 @@ import org.apache.logging.log4j.Logger;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
-public class FhirOmopModel {
+public abstract class FhirOmopModel {
 
-    public static final FhirOmopModel INSTANCE = new FhirOmopModel();
     private static final Logger LOGGER = VLogger.getLogger(FhirOmopModel.class);
     protected final FhirOmopVocabularyMapDModel FO_VOCAB_DM;
     protected final FhirOmopCodeMapDModel FO_CODE_DM;
     private final FhirContext CONTEXT;
     private final FhirValidator VALIDATOR;
-
 
     protected FhirOmopModel() {
         CONTEXT = FhirContext.forDstu3();

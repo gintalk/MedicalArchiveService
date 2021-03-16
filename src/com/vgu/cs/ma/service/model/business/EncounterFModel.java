@@ -18,15 +18,11 @@ import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterLocationComponent;
 
-public class EncounterModel {
+public class EncounterFModel extends FhirOmopModel {
 
-    public static final EncounterModel INSTANCE = new EncounterModel();
-    private final LocationModel LOCATION_MODEL;
-    private final String US_CORE_ENCOUNTER_URL;
+    public static final EncounterFModel INSTANCE = new EncounterFModel();
 
-    private EncounterModel() {
-        LOCATION_MODEL = LocationModel.INSTANCE;
-        US_CORE_ENCOUNTER_URL = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter";
+    private EncounterFModel() {
     }
 
     public Encounter constructFhir(VisitOccurrenceEntity visitOccurrence) {
@@ -48,12 +44,12 @@ public class EncounterModel {
             encounter.setPeriod(period);
         }
 
-        CodeableConcept type = getTypeCodeable(visitOccurrence.visit_type_concept_id);
+        CodeableConcept type = getTypeCodeable(visitOccurrence.visit_concept_id, visitOccurrence.visit_source_value);
         if (type != null) {
             encounter.addType(type);
         }
 
-        Extension visitType = getVisitTypeExtension(visitOccurrence.visit_concept_id);
+        Extension visitType = getVisitTypeExtension(visitOccurrence.visit_type_concept_id);
         if (visitType != null) {
             encounter.addExtension(visitType);
         }
@@ -105,13 +101,17 @@ public class EncounterModel {
         return period;
     }
 
-    public CodeableConcept getTypeCodeable(int visitConceptId) {
+    public CodeableConcept getTypeCodeable(int visitConceptId, String visitSourceValue) {
         ConceptEntity visitConcept = ConceptDModel.INSTANCE.getConcept(visitConceptId);
         if (visitConcept == null) {
             return null;
         }
 
-        return new CodeableConcept().setText(visitConcept.concept_name);
+        CodeableConcept typeCodeable = new CodeableConcept();
+        typeCodeable.setText(visitConcept.concept_name);
+        typeCodeable.setId(visitSourceValue);
+
+        return typeCodeable;
     }
 
     public Extension getVisitTypeExtension(int visitTypeConceptId) {

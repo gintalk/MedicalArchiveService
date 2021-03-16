@@ -21,15 +21,15 @@ import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import java.util.Calendar;
 import java.util.Date;
 
-public class PatientModel extends FhirOmopModel {
+public class PatientFModel extends FhirOmopModel {
 
-    public static final PatientModel INSTANCE = new PatientModel();
+    public static final PatientFModel INSTANCE = new PatientFModel();
     private final ProviderDModel PROVIDER_DM;
     private final String PATIENT_IDENTIFIER_SYSTEM;
     private final String US_CORE_RACE_URL;
     private final String US_CORE_ETHNICITY_URL;
 
-    private PatientModel() {
+    private PatientFModel() {
         super();
 
         PROVIDER_DM = ProviderDModel.INSTANCE;
@@ -157,30 +157,7 @@ public class PatientModel extends FhirOmopModel {
     }
 
     public Address getAddress(int locationId) {
-        if (locationId < 0) {
-            return null;
-        }
-
-        LocationEntity location = LocationDal.INSTANCE.get(locationId);
-        if (location == null) {
-            return null;
-        }
-
-        Address address = new Address();
-        address.setUse(Address.AddressUse.HOME);
-        address.setCity(location.city);
-        address.setState(location.state);
-        address.setPostalCode(location.zip);
-        address.setCountry(location.county);
-        if (!StringUtils.isNullOrEmpty(location.address_1) && !StringUtils.isNullOrEmpty(location.address_2)) {
-            address.addLine(location.address_1 + " " + location.address_2);
-        } else if (!StringUtils.isNullOrEmpty(location.address_1)) {
-            address.addLine(location.address_1);
-        } else if (!StringUtils.isNullOrEmpty(location.address_2)) {
-            address.addLine(location.address_2);
-        }
-
-        return address;
+        return LocationOModel.INSTANCE.getAddress(locationId);
     }
 
     public Extension getRaceExtension(int raceConceptId, String raceSourceValue) {
