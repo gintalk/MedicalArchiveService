@@ -7,17 +7,16 @@ package com.vgu.cs.ma.service.model.business;
  * @author namnh16 on 10/03/2021
  */
 
+import com.vgu.cs.common.util.DatetimeUtils;
+import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.CareSiteEntity;
 import com.vgu.cs.engine.entity.ConceptEntity;
 import com.vgu.cs.engine.entity.VisitOccurrenceEntity;
 import com.vgu.cs.ma.service.model.data.CareSiteDModel;
 import com.vgu.cs.ma.service.model.data.ConceptDModel;
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Encounter;
+import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterLocationComponent;
-import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.codesystems.V3ActCode;
 
 public class EncounterModel {
 
@@ -34,72 +33,115 @@ public class EncounterModel {
         Encounter encounter = new Encounter();
         encounter.setId(String.valueOf(visitOccurrence.visit_occurrence_id));
 
-        EncounterLocationComponent location = getLocation(visitOccurrence.care_site_id);
-        if(location != null){
+        EncounterLocationComponent location = getLocationComponent(visitOccurrence.care_site_id);
+        if (location != null) {
             encounter.addLocation(location);
         }
 
+        Reference subject = getSubjectReference(visitOccurrence.person_id);
+        if (subject != null) {
+            encounter.setSubject(subject);
+        }
 
+        Period period = getPeriod(visitOccurrence.visit_start_date, visitOccurrence.visit_start_datetime, visitOccurrence.visit_end_date, visitOccurrence.visit_end_datetime);
+        if (period != null) {
+            encounter.setPeriod(period);
+        }
+
+        CodeableConcept type = getTypeCodeable(visitOccurrence.visit_type_concept_id);
+        if (type != null) {
+            encounter.addType(type);
+        }
+
+        Extension visitType = getVisitTypeExtension(visitOccurrence.visit_concept_id);
+        if (visitType != null) {
+            encounter.addExtension(visitType);
+        }
+
+        EncounterHospitalizationComponent hospitalization = getHospitalizationComponent(visitOccurrence.admitting_source_concept_id, visitOccurrence.admitting_source_value, visitOccurrence.discharge_to_concept_id, visitOccurrence.discharge_to_source_value);
+        if (hospitalization != null) {
+            encounter.setHospitalization(hospitalization);
+        }
+
+        return encounter;
     }
 
-    public EncounterLocationComponent getLocation(int careSiteId){
+    public EncounterLocationComponent getLocationComponent(int careSiteId) {
         CareSiteEntity careSite = CareSiteDModel.INSTANCE.getCareSite(careSiteId);
-        if(careSite == null){
+        if (careSite == null) {
             return null;
         }
 
-        Reference locationReference= new Reference();
+        Reference locationReference = new Reference();
         locationReference.setReferenceElement(new IdType("Organization", String.valueOf(careSiteId)));
         locationReference.setDisplay(careSite.care_site_name);
 
         return new EncounterLocationComponent().setLocation(locationReference);
     }
 
-    public Coding getActCoding(int visitOccurrenceConceptId) {
-        ConceptEntity visitOccurrenceConcept = ConceptDModel.INSTANCE.getConcept(visitOccurrenceConceptId);
-        if (visitOccurrenceConcept == null) {
+    public Reference getSubjectReference(int personId) {
+        if (personId <= 0) {
+            return null;
+        }
+        return new Reference(new IdType("Patient", String.valueOf(personId)));
+    }
+
+    public Period getPeriod(String startDate, String startDatetime, String endDate, String endDatetime) {
+        Period period = new Period();
+        if (!StringUtils.isNullOrEmpty(startDatetime)) {
+            period.setStart(DatetimeUtils.parseDatetime(startDatetime));
+        } else if (!StringUtils.isNullOrEmpty(startDate)) {
+            period.setStart(DatetimeUtils.parseDate(startDate));
+        } else {
             return null;
         }
 
-        String visitOccurrenceConceptName = visitOccurrenceConcept.concept_name.toLowerCase();
-
-        Coding actCoding = new Coding();
-        if (visitOccurrenceConceptName.contains("inpatient")) {
-            actCoding.setSystem(V3ActCode.IMP.getSystem());
-            actCoding.setCode(V3ActCode.IMP.toCode());
-            actCoding.setDisplay(V3ActCode.IMP.getDisplay());
-        } else if (visitOccurrenceConceptName.toLowerCase().contains("outpatient")) {
-            actCoding.setSystem(V3ActCode.AMB.getSystem());
-            actCoding.setCode(V3ActCode.AMB.toCode());
-            actCoding.setDisplay(V3ActCode.AMB.getDisplay());
-        } else if (visitOccurrenceConceptName.toLowerCase().contains("ambulatory") || visitOccurrenceConceptName.toLowerCase().contains("office")) {
-            actCoding.setSystem(V3ActCode.AMB.getSystem());
-            actCoding.setCode(V3ActCode.AMB.toCode());
-            actCoding.setDisplay(V3ActCode.AMB.getDisplay());
-        } else if (visitOccurrenceConceptName.toLowerCase().contains("home")) {
-            actCoding.setSystem(V3ActCode.HH.getSystem());
-            actCoding.setCode(V3ActCode.HH.toCode());
-            actCoding.setDisplay(V3ActCode.HH.getDisplay());
-        } else if (visitOccurrenceConceptName.toLowerCase().contains("emergency")) {
-            actCoding.setSystem(V3ActCode.EMER.getSystem());
-            actCoding.setCode(V3ActCode.EMER.toCode());
-            actCoding.setDisplay(V3ActCode.EMER.getDisplay());
-        } else if (visitOccurrenceConceptName.toLowerCase().contains("field")) {
-            actCoding.setSystem(V3ActCode.FLD.getSystem());
-            actCoding.setCode(V3ActCode.FLD.toCode());
-            actCoding.setDisplay(V3ActCode.FLD.getDisplay());
-        } else if (visitOccurrenceConceptName.toLowerCase().contains("daytime")) {
-            actCoding.setSystem(V3ActCode.SS.getSystem());
-            actCoding.setCode(V3ActCode.SS.toCode());
-            actCoding.setDisplay(V3ActCode.SS.getDisplay());
-        } else if (visitOccurrenceConceptName.toLowerCase().contains("virtual")) {
-            actCoding.setSystem(V3ActCode.VR.getSystem());
-            actCoding.setCode(V3ActCode.VR.toCode());
-            actCoding.setDisplay(V3ActCode.VR.getDisplay());
-        } else {
-            actCoding = null;
+        if (!StringUtils.isNullOrEmpty(endDatetime)) {
+            period.setEnd(DatetimeUtils.parseDatetime(endDatetime));
+        } else if (!StringUtils.isNullOrEmpty(endDate)) {
+            period.setEnd(DatetimeUtils.parseDate(endDate));
         }
 
-        return actCoding;
+        return period;
+    }
+
+    public CodeableConcept getTypeCodeable(int visitConceptId) {
+        ConceptEntity visitConcept = ConceptDModel.INSTANCE.getConcept(visitConceptId);
+        if (visitConcept == null) {
+            return null;
+        }
+
+        return new CodeableConcept().setText(visitConcept.concept_name);
+    }
+
+    public Extension getVisitTypeExtension(int visitTypeConceptId) {
+        ConceptEntity visitTypeConcept = ConceptDModel.INSTANCE.getConcept(visitTypeConceptId);
+        if (visitTypeConcept == null) {
+            return null;
+        }
+
+        return new Extension().setValue(new CodeableConcept().setText(visitTypeConcept.concept_name));
+    }
+
+    public EncounterHospitalizationComponent getHospitalizationComponent(int admittingSourceConceptId, String admittingSourceValue, int dischargeToConceptId, String dischargeToSourceValue) {
+        EncounterHospitalizationComponent hospitalization = new EncounterHospitalizationComponent();
+
+        ConceptEntity admittingSourceConcept = ConceptDModel.INSTANCE.getConcept(admittingSourceConceptId);
+        if (admittingSourceConcept != null) {
+            hospitalization.setAdmitSource(new CodeableConcept().setText(admittingSourceConcept.concept_name));
+        }
+        if (!StringUtils.isNullOrEmpty(admittingSourceValue)) {
+            hospitalization.getAdmitSource().setId(admittingSourceValue);
+        }
+
+        ConceptEntity dischargeToConcept = ConceptDModel.INSTANCE.getConcept(dischargeToConceptId);
+        if (dischargeToConcept != null) {
+            hospitalization.setDischargeDisposition(new CodeableConcept().setText(dischargeToConcept.concept_name));
+        }
+        if (!StringUtils.isNullOrEmpty(dischargeToSourceValue)) {
+            hospitalization.getDischargeDisposition().setId(dischargeToSourceValue);
+        }
+
+        return hospitalization;
     }
 }
