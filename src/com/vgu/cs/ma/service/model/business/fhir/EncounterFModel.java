@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.business;
+package com.vgu.cs.ma.service.model.business.fhir;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -18,7 +18,7 @@ import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.dstu3.model.Encounter.EncounterLocationComponent;
 
-public class EncounterFModel extends FhirOmopModel {
+public class EncounterFModel  {
 
     public static final EncounterFModel INSTANCE = new EncounterFModel();
 

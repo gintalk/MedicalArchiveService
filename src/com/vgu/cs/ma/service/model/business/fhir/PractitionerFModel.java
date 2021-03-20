@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.business;
+package com.vgu.cs.ma.service.model.business.fhir;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -15,7 +15,7 @@ import com.vgu.cs.ma.service.util.CodeableConceptUtil;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Practitioner.PractitionerQualificationComponent;
 
-public class PractitionerFModel extends FhirOmopModel {
+public class PractitionerFModel  {
 
     public static final PractitionerFModel INSTANCE = new PractitionerFModel();
 

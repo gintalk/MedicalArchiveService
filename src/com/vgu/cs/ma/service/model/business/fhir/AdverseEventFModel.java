@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.business;
+package com.vgu.cs.ma.service.model.business.fhir;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -10,6 +10,7 @@ package com.vgu.cs.ma.service.model.business;
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.DeathEntity;
+import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtil;
 import org.hl7.fhir.dstu3.model.AdverseEvent;
 import org.hl7.fhir.dstu3.model.AdverseEvent.AdverseEventSuspectEntityComponent;
@@ -18,7 +19,7 @@ import org.hl7.fhir.dstu3.model.Extension;
 
 import java.util.Date;
 
-public class AdverseEventFModel extends FhirOmopModel {
+public class AdverseEventFModel  {
 
     public static final AdverseEventFModel INSTANCE = new AdverseEventFModel();
 

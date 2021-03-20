@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.business;
+package com.vgu.cs.ma.service.model.business.omop;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -12,7 +12,7 @@ import com.vgu.cs.engine.dal.LocationDal;
 import com.vgu.cs.engine.entity.LocationEntity;
 import org.hl7.fhir.dstu3.model.Address;
 
-public class LocationOModel extends FhirOmopModel {
+public class LocationOModel {
 
     public static final LocationOModel INSTANCE = new LocationOModel();
 

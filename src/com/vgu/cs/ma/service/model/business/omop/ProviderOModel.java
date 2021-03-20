@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.business;
+package com.vgu.cs.ma.service.model.business.omop;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -12,7 +12,7 @@ import com.vgu.cs.ma.service.model.data.ProviderDModel;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Reference;
 
-public class ProviderOModel extends FhirOmopModel {
+public class ProviderOModel {
 
     public static final ProviderOModel INSTANCE = new ProviderOModel();
 

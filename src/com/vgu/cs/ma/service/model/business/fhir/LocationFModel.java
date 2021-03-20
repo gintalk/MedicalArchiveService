@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.business;
+package com.vgu.cs.ma.service.model.business.fhir;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -10,12 +10,13 @@ package com.vgu.cs.ma.service.model.business;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.CareSiteEntity;
 import com.vgu.cs.engine.entity.LocationEntity;
+import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtil;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Location;
 
-public class LocationFModel extends FhirOmopModel {
+public class LocationFModel  {
 
     public static LocationFModel INSTANCE = new LocationFModel();
 

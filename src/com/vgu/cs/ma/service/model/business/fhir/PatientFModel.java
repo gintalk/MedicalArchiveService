@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.business;
+package com.vgu.cs.ma.service.model.business.fhir;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -11,13 +11,15 @@ import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.ConceptEntity;
 import com.vgu.cs.engine.entity.PersonEntity;
+import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
+import com.vgu.cs.ma.service.model.business.omop.ProviderOModel;
 import com.vgu.cs.ma.service.model.data.ConceptDModel;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 
 import java.util.Calendar;
 
-public class PatientFModel extends FhirOmopModel {
+public class PatientFModel  {
 
     public static final PatientFModel INSTANCE = new PatientFModel();
     private final String US_CORE_RACE_URL;
