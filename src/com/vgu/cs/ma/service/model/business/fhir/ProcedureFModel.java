@@ -9,6 +9,7 @@ package com.vgu.cs.ma.service.model.business.fhir;
 
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
+import com.vgu.cs.engine.entity.DeviceExposureEntity;
 import com.vgu.cs.engine.entity.ProcedureOccurrenceEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.model.business.omop.ProviderOModel;
@@ -17,7 +18,7 @@ import org.hl7.fhir.dstu3.model.*;
 
 import java.util.Date;
 
-public class ProcedureFModel  {
+public class ProcedureFModel {
 
     public static final ProcedureFModel INSTANCE = new ProcedureFModel();
 
@@ -28,24 +29,36 @@ public class ProcedureFModel  {
     public Procedure constructFhir(ProcedureOccurrenceEntity procedureOccurrence) {
         Procedure procedure = new Procedure();
 
-        _addId(procedure, procedureOccurrence);
-        _addSubjectReference(procedure, procedureOccurrence);
+        _addId(procedure, procedureOccurrence.procedure_occurrence_id);
+        _addSubjectReference(procedure, procedureOccurrence.person_id);
         _addCode(procedure, procedureOccurrence);
         _addPerformedDate(procedure, procedureOccurrence);
         _addTypeExtension(procedure, procedureOccurrence);
-        _addQuantity(procedure, procedureOccurrence);
-        _addPerformerActor(procedure, procedureOccurrence);
-        _addContext(procedure, procedureOccurrence);
+        _addQuantity(procedure, procedureOccurrence.quantity);
+        _addPerformerActor(procedure, procedureOccurrence.provider_id);
 
         return procedure;
     }
 
-    private void _addId(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
-        procedure.setId(new IdType(procedureOccurrence.procedure_occurrence_id));
+    public Procedure constructFhir(DeviceExposureEntity deviceExposure) {
+        Procedure procedure = new Procedure();
+
+        _addId(procedure, deviceExposure.device_exposure_id);
+        _addQuantity(procedure, deviceExposure.quantity);
+        _addPerformerActor(procedure, deviceExposure.provider_id);
+        _addSubjectReference(procedure, deviceExposure.person_id);
+        _addPerformedPeriod(procedure, deviceExposure);
+        _addTypeExtension(procedure, deviceExposure);
+
+        return procedure;
     }
 
-    private void _addSubjectReference(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
-        procedure.setSubject(PersonOModel.INSTANCE.getReference(procedureOccurrence.person_id));
+    private void _addId(Procedure procedure, int id) {
+        procedure.setId(new IdType(id));
+    }
+
+    private void _addSubjectReference(Procedure procedure, int personId) {
+        procedure.setSubject(PersonOModel.INSTANCE.getReference(personId));
     }
 
     private void _addCode(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
@@ -69,6 +82,20 @@ public class ProcedureFModel  {
         procedure.setPerformed(new DateTimeType(dateOrDateTime));
     }
 
+    private void _addPerformedPeriod(Procedure procedure, DeviceExposureEntity deviceExposure) {
+        Period period = procedure.getPerformedPeriod();
+
+        Date start = DateTimeUtils.parseDateOrDateTime(deviceExposure.device_exposure_start_date, deviceExposure.device_exposure_start_datetime);
+        if (start != null) {
+            period.setStart(start);
+        }
+
+        Date end = DateTimeUtils.parseDateOrDateTime(deviceExposure.device_exposure_end_date, deviceExposure.device_exposure_end_datetime);
+        if (end != null) {
+            period.setEnd(end);
+        }
+    }
+
     private void _addTypeExtension(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
         CodeableConcept typeCodeable = CodeableConceptUtil.fromConceptId(procedureOccurrence.procedure_type_concept_id);
         if (typeCodeable == null) {
@@ -81,9 +108,21 @@ public class ProcedureFModel  {
         procedure.addExtension(typeExtension);
     }
 
-    private void _addQuantity(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
+    private void _addTypeExtension(Procedure procedure, DeviceExposureEntity deviceExposure) {
+        CodeableConcept typeCodeable = CodeableConceptUtil.fromConceptId(deviceExposure.device_type_concept_id);
+        if (typeCodeable == null) {
+            return;
+        }
+
+        Extension typeExtension = new Extension();
+        typeExtension.setProperty("raw-value", typeCodeable);
+
+        procedure.addExtension(typeExtension);
+    }
+
+    private void _addQuantity(Procedure procedure, int quantity) {
         CodeableConcept quantityCodeable = new CodeableConcept();
-        quantityCodeable.setText(String.valueOf(procedureOccurrence.quantity));
+        quantityCodeable.setText(String.valueOf(quantity));
 
         Extension quantityExtension = new Extension();
         quantityExtension.setProperty("num-of-procedures", quantityCodeable);
@@ -91,12 +130,8 @@ public class ProcedureFModel  {
         procedure.addExtension(quantityExtension);
     }
 
-    private void _addPerformerActor(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
-        Reference actorReference = ProviderOModel.INSTANCE.getReference(procedureOccurrence.provider_id);
+    private void _addPerformerActor(Procedure procedure, int providerId) {
+        Reference actorReference = ProviderOModel.INSTANCE.getReference(providerId);
         procedure.addPerformer(new Procedure.ProcedurePerformerComponent().setActor(actorReference));
-    }
-
-    private void _addContext(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence){
-        Reference contextReference = new Reference(new IdType())
     }
 }
