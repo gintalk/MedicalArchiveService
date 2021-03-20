@@ -11,8 +11,10 @@ import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.DeathEntity;
 import com.vgu.cs.ma.service.util.CodeableConceptUtil;
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.AdverseEvent;
 import org.hl7.fhir.dstu3.model.AdverseEvent.AdverseEventSuspectEntityComponent;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Extension;
 
 import java.util.Date;
 
@@ -35,7 +37,7 @@ public class AdverseEventFModel extends FhirOmopModel {
     }
 
     private void _addSubjectReference(AdverseEvent adverseEvent, DeathEntity death) {
-        adverseEvent.setSubject(new Reference(new IdType("Patient", String.valueOf(death.person_id))));
+        adverseEvent.setSubject(PersonOModel.INSTANCE.getReference(death.person_id));
     }
 
     private void _addDate(AdverseEvent adverseEvent, DeathEntity death) {

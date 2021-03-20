@@ -11,9 +11,7 @@ import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.ConceptEntity;
 import com.vgu.cs.engine.entity.PersonEntity;
-import com.vgu.cs.engine.entity.ProviderEntity;
 import com.vgu.cs.ma.service.model.data.ConceptDModel;
-import com.vgu.cs.ma.service.model.data.ProviderDModel;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 
@@ -104,17 +102,7 @@ public class PatientFModel extends FhirOmopModel {
     }
 
     private void _addGeneralPractitionerReference(Patient patient, PersonEntity person) {
-        ProviderEntity provider = ProviderDModel.INSTANCE.getProvider(person.provider_id);
-        if (provider == null) {
-            return;
-        }
-
-        Reference generalPractitionerReference = new Reference(new IdType("Practitioner", String.valueOf(person.provider_id)));
-        if (!StringUtils.isNullOrEmpty(provider.provider_name)) {
-            generalPractitionerReference.setDisplay(provider.provider_name);
-        }
-
-        patient.addGeneralPractitioner(generalPractitionerReference);
+        patient.addGeneralPractitioner(ProviderOModel.INSTANCE.getReference(person.provider_id));
     }
 
     private void _addGender(Patient patient, PersonEntity person) {

@@ -10,8 +10,6 @@ package com.vgu.cs.ma.service.model.business;
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.ConditionOccurrenceEntity;
-import com.vgu.cs.engine.entity.ProviderEntity;
-import com.vgu.cs.ma.service.model.data.ProviderDModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtil;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
@@ -47,13 +45,7 @@ public class ConditionFModel extends FhirOmopModel {
     }
 
     private void _addAsserterReference(Condition condition, ConditionOccurrenceEntity conditionOccurrence) {
-        Reference asserterReference = new Reference(new IdType("Practitioner", String.valueOf(conditionOccurrence.provider_id)));
-
-        ProviderEntity provider = ProviderDModel.INSTANCE.getProvider(conditionOccurrence.provider_id);
-        if (provider != null) {
-            asserterReference.setDisplay(provider.provider_name);
-        }
-        condition.setAsserter(asserterReference);
+        condition.setAsserter(ProviderOModel.INSTANCE.getReference(conditionOccurrence.provider_id));
     }
 
     // TODO
@@ -62,7 +54,7 @@ public class ConditionFModel extends FhirOmopModel {
     }
 
     private void _addSubjectReference(Condition condition, ConditionOccurrenceEntity conditionOccurrence) {
-        condition.setSubject(new Reference(new IdType("Patient", String.valueOf(conditionOccurrence.person_id))));
+        condition.setSubject(PersonOModel.INSTANCE.getReference(conditionOccurrence.person_id));
     }
 
     private void _addCode(Condition condition, ConditionOccurrenceEntity conditionOccurrence) {
