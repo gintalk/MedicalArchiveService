@@ -7,7 +7,7 @@ package com.vgu.cs.ma.service.model.business;
  * @author namnh16 on 10/03/2021
  */
 
-import com.vgu.cs.common.util.DatetimeUtils;
+import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.CareSiteEntity;
 import com.vgu.cs.engine.entity.ConceptEntity;
@@ -85,17 +85,17 @@ public class EncounterFModel extends FhirOmopModel {
     public Period getPeriod(String startDate, String startDatetime, String endDate, String endDatetime) {
         Period period = new Period();
         if (!StringUtils.isNullOrEmpty(startDatetime)) {
-            period.setStart(DatetimeUtils.parseDatetime(startDatetime));
+            period.setStart(DateTimeUtils.parseDatetime(startDatetime));
         } else if (!StringUtils.isNullOrEmpty(startDate)) {
-            period.setStart(DatetimeUtils.parseDate(startDate));
+            period.setStart(DateTimeUtils.parseDate(startDate));
         } else {
             return null;
         }
 
         if (!StringUtils.isNullOrEmpty(endDatetime)) {
-            period.setEnd(DatetimeUtils.parseDatetime(endDatetime));
+            period.setEnd(DateTimeUtils.parseDatetime(endDatetime));
         } else if (!StringUtils.isNullOrEmpty(endDate)) {
-            period.setEnd(DatetimeUtils.parseDate(endDate));
+            period.setEnd(DateTimeUtils.parseDate(endDate));
         }
 
         return period;
@@ -120,7 +120,10 @@ public class EncounterFModel extends FhirOmopModel {
             return null;
         }
 
-        return new Extension().setValue(new CodeableConcept().setText(visitTypeConcept.concept_name));
+        Extension visitTypeExtension = new Extension();
+        visitTypeExtension.setProperty("source-data-type", new CodeableConcept().setText(visitTypeConcept.concept_name));
+
+        return visitTypeExtension;
     }
 
     public EncounterHospitalizationComponent getHospitalizationComponent(int admittingSourceConceptId, String admittingSourceValue, int dischargeToConceptId, String dischargeToSourceValue) {
