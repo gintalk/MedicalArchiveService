@@ -14,6 +14,8 @@ import com.vgu.cs.engine.entity.PersonEntity;
 import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
 import com.vgu.cs.ma.service.model.business.omop.ProviderOModel;
 import com.vgu.cs.ma.service.model.data.ConceptDModel;
+import com.vgu.cs.ma.service.model.data.FhirOmopCodeMapDModel;
+import com.vgu.cs.ma.service.model.data.FhirOmopVocabularyMapDModel;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 
@@ -61,7 +63,7 @@ public class PatientFModel  {
         if (sourceValues.length == 1) {
             sourceValueIdentifier.setValue(sourceValues[0]);
         } else {
-            String fhirSystem = FO_VOCAB_DM.getFhirUrlSystem(sourceValues[0]);
+            String fhirSystem = FhirOmopVocabularyMapDModel.INSTANCE.getFhirUrlSystem(sourceValues[0]);
 
             StringBuilder valueBuilder = new StringBuilder();
             if (sourceValues.length > 2) {
@@ -125,9 +127,9 @@ public class PatientFModel  {
 
         Coding raceCoding;
         if (raceConcept == null) {
-            raceCoding = FO_CODE_DM.getFhirCodingFromOmopSourceValue(person.race_source_value);
+            raceCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopSourceValue(person.race_source_value);
         } else {
-            raceCoding = FO_CODE_DM.getFhirCodingFromOmopConcept(person.race_concept_id);
+            raceCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopConcept(person.race_concept_id);
         }
 
         Extension ombCatExtension = new Extension();
@@ -149,9 +151,9 @@ public class PatientFModel  {
 
         Coding ethnicityCoding;
         if (ethnicityConcept == null) {
-            ethnicityCoding = FO_CODE_DM.getFhirCodingFromOmopSourceValue(person.ethnicity_source_value);
+            ethnicityCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopSourceValue(person.ethnicity_source_value);
         } else {
-            ethnicityCoding = FO_CODE_DM.getFhirCodingFromOmopConcept(person.ethnicity_concept_id);
+            ethnicityCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopConcept(person.ethnicity_concept_id);
         }
 
         Extension ombCatExtension = new Extension();
