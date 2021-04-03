@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.business.fhir;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 05/03/2021
- */
-
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.ConceptEntity;
@@ -21,7 +14,22 @@ import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 
 import java.util.Calendar;
 
-public class PatientFModel  {
+/**
+ * <p>
+ * The class <code>PatientFModel</code> constructs <code>Patient</code>> from any record in the OMOP-compliant
+ * table <code>person</code>
+ * </p>
+ * <p>
+ * The <code>Patient</code> class contains one single public method accepting a <code>PersonEntity</code>, which
+ * represents a record in <code>person</code>, and returns a FHIR-compliant <code>Patient</code>.
+ * </p>
+ *
+ * @author namnh16 on 05/03/2021
+ * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
+ * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#PERSON">OMOP PERSON</a>
+ * @see <a href="https://www.hl7.org/fhir/patient.html">FHIR Patient</a>
+ */
+public class PatientFModel {
 
     public static final PatientFModel INSTANCE = new PatientFModel();
     private final String US_CORE_RACE_URL;
@@ -49,6 +57,10 @@ public class PatientFModel  {
         return patient;
     }
 
+    /**
+     * Corresponding FHIR field: Patient.identifier
+     * Contain Person.person_id and the original system in which the ID can be used to identify the patient
+     */
     private void _addIdentifier(Patient patient, PersonEntity person) {
         Identifier idIdentifier = new Identifier();
         idIdentifier.setValue(String.valueOf(person.person_id));
@@ -92,6 +104,11 @@ public class PatientFModel  {
         patient.addIdentifier(sourceValueIdentifier);
     }
 
+    /**
+     * Corresponding FHIR field: Patient.birthDate
+     * If Person.birth_datetime is present, parse it as "yyyy/MM/dd HH:mm:ss". Otherwise, use Java Calendar to
+     * construct a date from Person.year_of_birth, Person.month_of_birth and Person.day_of_birth
+     */
     private void _addBirthDate(Patient patient, PersonEntity person) {
         if (!StringUtils.isNullOrEmpty(person.birth_datetime)) {
             patient.setBirthDate(DateTimeUtils.parseDatetime(person.birth_datetime));
@@ -105,10 +122,18 @@ public class PatientFModel  {
         }
     }
 
+    /**
+     * Corresponding FHIR field: Patient.generalPractitioner
+     * Retrieve a reference to the person who is medically responsible for the patient from Person.provider_id
+     */
     private void _addGeneralPractitionerReference(Patient patient, PersonEntity person) {
         patient.addGeneralPractitioner(ProviderOModel.INSTANCE.getReference(person.provider_id));
     }
 
+    /**
+     * Corresponding FHIR field: Patient.gender
+     * Compute a gender preset from Person.gender_concept_id
+     */
     private void _addGender(Patient patient, PersonEntity person) {
         ConceptEntity genderConcept = ConceptDModel.INSTANCE.getConcept(person.gender_concept_id);
         if (genderConcept == null) {
@@ -118,10 +143,19 @@ public class PatientFModel  {
         }
     }
 
+    /**
+     * Corresponding FHIR field: Patient.address
+     * Rely on <code>LocationOModel</code> to construct address data from Person.location_id
+     */
     private void _addAddress(Patient patient, PersonEntity person) {
         patient.addAddress(LocationOModel.INSTANCE.getAddress(person.location_id));
     }
 
+    /**
+     * Corresponding FHIR field: Patient.extension: us-core-race
+     *
+     * @see <a href="https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-race.html">Structure Definition: us-core-race</a>
+     */
     private void _addRaceExtension(Patient patient, PersonEntity person) {
         ConceptEntity raceConcept = ConceptDModel.INSTANCE.getConcept(person.race_concept_id);
 
@@ -146,6 +180,11 @@ public class PatientFModel  {
         patient.addExtension(raceExtension);
     }
 
+    /**
+     * Corresponding FHIR field: Patient.extension: us-core-ethnicity
+     *
+     * @see <a href="https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-ethnicity.html>Structure Definition: us-core-ethnicity</a>
+     */
     private void _addEthnicityExtension(Patient patient, PersonEntity person) {
         ConceptEntity ethnicityConcept = ConceptDModel.INSTANCE.getConcept(person.ethnicity_concept_id);
 

@@ -5,6 +5,7 @@
   * [Responsibility](#responsibility)
   * [Technologies](#technologies)
 * [Details](#details)
+* [References](#references)
 
 ## General info
 This is a part of a 3-layer back-end architecture:<br>
@@ -27,6 +28,13 @@ this project was based on. We have chosen the OHDSI OMOP common data
 model to be the format in which our data are stored in. Therefore, most 
 of the work performed by this service involves converting data between 
 OHDSI OMOP and HL7 FHIR.
+
+## References
+* OMOP Vocabularies: https://athena.ohdsi.org/vocabulary/list
+* OHDSI OMOP CDM database setup guide: https://github.com/OHDSI/CommonDataModel/tree/v5.2.2/PostgreSQL
+* Sample OMOP dataset: http://www.ltscomputingllc.com/downloads/
+* HL7 FHIR documentation: https://www.hl7.org/fhir/documentation.html
+* OMOP on FHIR: https://github.com/omoponfhir/omoponfhir-main-stu3.git
 
 [API]: https://github.com/gintalk/MedicalArchiveAPI.git
 [Apache Thrift]: https://thrift.apache.org/docs/
