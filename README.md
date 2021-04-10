@@ -12,7 +12,7 @@ This is a part of a 3-layer back-end architecture:<br>
 [API] <-> ***SERVICE*** <-> Database
 
 ### Responsibility
-This server exposes API to retrieve HL7 FHIR-compliant medical data.
+This server exposes API which serves HL7 FHIR-compliant medical data.
 
 ### Technologies
 * [Apache Thrift] version: 0.14.1
