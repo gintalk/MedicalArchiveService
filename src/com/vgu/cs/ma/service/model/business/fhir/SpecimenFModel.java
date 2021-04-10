@@ -16,7 +16,25 @@ import org.hl7.fhir.dstu3.model.*;
 
 import java.util.Date;
 
-public class SpecimenFModel  {
+/**
+ * <p>
+ * A sample to be used for analysis.
+ * </p>
+ * <p>
+ * The class <code>SpecimenFModel</code> constructs <code>Specimen</code>> from any record in the OMOP-compliant
+ * table <code>specimen</code>.
+ * </p>
+ * <p>
+ * The <code>SpecimenFModel</code> class contains one single public method accepting a <code>SpecimenEntity</code>, which
+ * represents a record in <code>spcimen</code>, and returns a FHIR-compliant <code>Specimen</code>.
+ * </p>
+ *
+ * @author namnh16 on 05/03/2021
+ * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
+ * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#SPECIMEN">OMOP SPECIMEN</a>
+ * @see <a href="https://www.hl7.org/fhir/specimen.html">FHIR Specimen</a>
+ */
+public class SpecimenFModel {
 
     public static final SpecimenFModel INSTANCE = new SpecimenFModel();
 
@@ -38,10 +56,17 @@ public class SpecimenFModel  {
         return fSpecimen;
     }
 
+    /**
+     * Corresponding FHIR field: Specimen.id
+     * Unique identifier for each specimen.
+     */
     private void _addId(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         fSpecimen.setId(new IdType(oSpecimen.specimen_id));
     }
 
+    /**
+     * Corresponding FHIR field: Specimen.Extension (Proposed Name: disease-status-code : CodeableConcept)
+     */
     private void _addDiseaseStatusExtension(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         CodeableConcept diseaseStatusCodeable = CodeableConceptUtil.fromConceptId(oSpecimen.disease_status_concept_id);
         if (diseaseStatusCodeable == null) {
@@ -58,10 +83,22 @@ public class SpecimenFModel  {
         fSpecimen.addExtension(diseaseStatusCodeExtension);
     }
 
+    /**
+     * Corresponding FHIR field: Specimen.subject
+     * Where the specimen came from. This may be from patient(s), from a location (e.g., the source of an environmental
+     * sample), or a sampling of a substance or a device. SPECIMEN.person_id identifiestThe person from whom the
+     * specimen is collected.
+     */
     private void _addSubjectReference(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         fSpecimen.setSubject(PersonOModel.INSTANCE.getReference(oSpecimen.person_id));
     }
 
+    /**
+     * Corresponding FHIR field: Specimen.type
+     * Kind of material that forms the specimen.
+     *
+     * @see <a href="https://www.hl7.org/fhir/v2/0487/index.html">Available values for specimen type</a>
+     */
     private void _addType(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         CodeableConcept specimenCodeable = CodeableConceptUtil.fromConceptId(oSpecimen.specimen_concept_id);
         if (specimenCodeable == null) {
@@ -75,6 +112,9 @@ public class SpecimenFModel  {
         fSpecimen.setType(specimenCodeable);
     }
 
+    /**
+     * Corresponding FHIR field: Specimen.Extension (Proposed Name: source-data-type : CodeableConcept)
+     */
     private void _addTypeExtension(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         CodeableConcept typeCodeable = CodeableConceptUtil.fromConceptId(oSpecimen.specimen_type_concept_id);
         if (typeCodeable == null) {
@@ -87,6 +127,10 @@ public class SpecimenFModel  {
         fSpecimen.addExtension(sourceDataTypeExtension);
     }
 
+    /**
+     * Corresponding FHIR field: Specimen.collection.collectedDateTime
+     * The date the specimen was collected.
+     */
     private void _addCollectedDateTime(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         Date dateOrDateTime = DateTimeUtils.parseDateOrDateTime(oSpecimen.specimen_date, oSpecimen.specimen_datetime);
         if (dateOrDateTime == null) {
@@ -95,6 +139,10 @@ public class SpecimenFModel  {
         fSpecimen.getCollection().setCollected(new DateTimeType(dateOrDateTime));
     }
 
+    /**
+     * Corresponding FHIR field: Specimen.collection.quantity
+     * The quantity of specimen collected.
+     */
     private void _addQuantity(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         SimpleQuantity quantity = new SimpleQuantity();
         quantity.setValue(oSpecimen.quantity);

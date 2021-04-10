@@ -16,11 +16,14 @@ import java.util.Calendar;
 
 /**
  * <p>
- * The class <code>PatientFModel</code> constructs <code>Patient</code>> from any record in the OMOP-compliant
- * table <code>person</code>
+ * Information about an individual or animal receiving health care services.
  * </p>
  * <p>
- * The <code>Patient</code> class contains one single public method accepting a <code>PersonEntity</code>, which
+ * The class <code>PatientFModel</code> constructs <code>Patient</code>> from any record in the OMOP-compliant
+ * table <code>person</code>.
+ * </p>
+ * <p>
+ * The <code>PatientFModel</code> class contains one single public method accepting a <code>PersonEntity</code>, which
  * represents a record in <code>person</code>, and returns a FHIR-compliant <code>Patient</code>.
  * </p>
  *
@@ -59,7 +62,9 @@ public class PatientFModel {
 
     /**
      * Corresponding FHIR field: Patient.identifier
-     * Contain Person.person_id and the original system in which the ID can be used to identify the patient
+     * An identifier for this patient. It is assumed that every person with a different unique identifier is in fact a
+     * different person and should be treated independently. PERSON.person_source_value is used to link back to persons
+     * in the source data.
      */
     private void _addIdentifier(Patient patient, PersonEntity person) {
         Identifier idIdentifier = new Identifier();
@@ -106,8 +111,7 @@ public class PatientFModel {
 
     /**
      * Corresponding FHIR field: Patient.birthDate
-     * If Person.birth_datetime is present, parse it as "yyyy/MM/dd HH:mm:ss". Otherwise, use Java Calendar to
-     * construct a date from Person.year_of_birth, Person.month_of_birth and Person.day_of_birth
+     * The date of birth for the individual.
      */
     private void _addBirthDate(Patient patient, PersonEntity person) {
         if (!StringUtils.isNullOrEmpty(person.birth_datetime)) {
@@ -124,7 +128,7 @@ public class PatientFModel {
 
     /**
      * Corresponding FHIR field: Patient.generalPractitioner
-     * Retrieve a reference to the person who is medically responsible for the patient from Person.provider_id
+     * Patient's nominated primary care provider. PERSON.provider_id refers to the last known primary care provider.
      */
     private void _addGeneralPractitionerReference(Patient patient, PersonEntity person) {
         patient.addGeneralPractitioner(ProviderOModel.INSTANCE.getReference(person.provider_id));
@@ -132,7 +136,9 @@ public class PatientFModel {
 
     /**
      * Corresponding FHIR field: Patient.gender
-     * Compute a gender preset from Person.gender_concept_id
+     * PERSON.gender_concept_id is meant to capture the biological sex at birth of the Person.
+     *
+     * @see <a href="https://www.hl7.org/fhir/valueset-administrative-gender.html">Available values for gender</a>
      */
     private void _addGender(Patient patient, PersonEntity person) {
         ConceptEntity genderConcept = ConceptDModel.INSTANCE.getConcept(person.gender_concept_id);
@@ -145,7 +151,8 @@ public class PatientFModel {
 
     /**
      * Corresponding FHIR field: Patient.address
-     * Rely on <code>LocationOModel</code> to construct address data from Person.location_id
+     * An address for the individual. PERSON.location_id refers to the physical address of the person. This field
+     * should capture the last known location of the person.
      */
     private void _addAddress(Patient patient, PersonEntity person) {
         patient.addAddress(LocationOModel.INSTANCE.getAddress(person.location_id));
@@ -153,7 +160,8 @@ public class PatientFModel {
 
     /**
      * Corresponding FHIR field: Patient.extension: us-core-race
-     *
+     * PERSON.race_concept_id captures race or ethnic background of the person. PERSON.race_source_value is used to
+     * store the race of the person from the source data and should be used for reference only.
      * @see <a href="https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-race.html">Structure Definition: us-core-race</a>
      */
     private void _addRaceExtension(Patient patient, PersonEntity person) {
@@ -182,7 +190,9 @@ public class PatientFModel {
 
     /**
      * Corresponding FHIR field: Patient.extension: us-core-ethnicity
-     *
+     * PERSON.ethnicity_concept_id captures Ethnicity as defined by the Office of Management and Budget (OMB) of the US
+     * Government. PERSON.ethnicity_source_value is used to store the ethnicity of the person from the source data and
+     * should be used for reference only.
      * @see <a href="https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-ethnicity.html>Structure Definition: us-core-ethnicity</a>
      */
     private void _addEthnicityExtension(Patient patient, PersonEntity person) {

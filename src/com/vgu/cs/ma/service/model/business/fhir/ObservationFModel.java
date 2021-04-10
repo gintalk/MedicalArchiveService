@@ -19,6 +19,25 @@ import org.hl7.fhir.dstu3.model.Observation.ObservationReferenceRangeComponent;
 
 import java.util.Date;
 
+/**
+ * <p>
+ * Measurements and simple assertions made about a patient, device or other subject.
+ * </p>
+ * <p>
+ * The class <code>ObservationFModel</code> constructs <code>Observation</code>> from any record in the OMOP-compliant
+ * table <code>observation</code> or <code>measurement</code>.
+ * </p>
+ * <p>
+ * The <code>ObservationFModel</code> class contains two public methods accepting either a <code>ObservationEntity</code>
+ * or a <code>MeasurementEntity</code>, and returns a FHIR-compliant <code>Observation</code>.
+ * </p>
+ *
+ * @author namnh16 on 05/03/2021
+ * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
+ * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#OBSERVATION">OMOP OBSERVATION</a>
+ * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#MEASUREMENT">OMOP MEASUREMENT</a>
+ * @see <a href="https://www.hl7.org/fhir/observation.html">FHIR Observation</a>
+ */
 public class ObservationFModel {
 
     public static final ObservationFModel INSTANCE = new ObservationFModel();
@@ -58,10 +77,19 @@ public class ObservationFModel {
         return observation;
     }
 
+    /**
+     * Corresponding FHIR field: Observation.id
+     */
     private void _addId(Observation fObservation, int id) {
         fObservation.setId(new IdType(id));
     }
 
+    /**
+     * Corresponding FHIR field: Observation.Extension (Proposed Name: decision-aid-alert : CodeableConcept)
+     * OBSERVATION.qualifier_concept_id contains all attributes specifying the clinical fact further, such as as
+     * degrees, severities, drug-drug interaction alerts etc. OBSERVATION.qualifier_source_value houses the verbatim
+     * value from the source data representing the qualifier of the Observation that occurred.
+     */
     private void _addQualifierExtension(Observation fObservation, ObservationEntity oObservation) {
         CodeableConcept qualifierCodeable = CodeableConceptUtil.fromConceptId(oObservation.qualifier_concept_id);
         if (qualifierCodeable == null) {
@@ -78,6 +106,10 @@ public class ObservationFModel {
         fObservation.addExtension(qualifierExtension);
     }
 
+    /**
+     * Corresponding FHIR field: Observation.value[x], Observation.valueString, Observation.valueCodeableConcept
+     * Actual result
+     */
     private void _addValue(Observation fObservation, int unitConceptId, double valueAsNumber, String valueAsString, int valueAsConceptId) {
         CodeableConcept unitCodeable = CodeableConceptUtil.fromConceptId(unitConceptId);
         if (unitCodeable == null) {
@@ -101,6 +133,10 @@ public class ObservationFModel {
         }
     }
 
+    /**
+     * Corresponding FHIR field: Observation.referenceRange
+     * Provides guide for interpretation
+     */
     private void _addReferenceRange(Observation observation, MeasurementEntity measurement) {
         ObservationReferenceRangeComponent component = new ObservationReferenceRangeComponent();
 
@@ -115,10 +151,19 @@ public class ObservationFModel {
         observation.addReferenceRange(component);
     }
 
+    /**
+     * Corresponding FHIR field: Observation.performer
+     * Who is responsible for the observation.
+     */
     private void _addPerformerReference(Observation fObservation, int providerId) {
         fObservation.addPerformer(ProviderOModel.INSTANCE.getReference(providerId));
     }
 
+    /**
+     * Corresponding FHIR field: Observation.Extension (Proposed Name: raw-value : CodeableConcept)
+     * MEASUREMENT.measure_source_value houses the verbatim value from the source data representing the Measurement
+     * that occurred.
+     */
     private void _addMeasurementExtension(Observation observation, MeasurementEntity measurement) {
         CodeableConcept codeable = CodeableConceptUtil.fromText(measurement.measurement_source_value);
         if (codeable == null) {
@@ -131,10 +176,20 @@ public class ObservationFModel {
         observation.addExtension(rawValueExtension);
     }
 
+    /**
+     * Corresponding FHIR field: Observation.subject
+     * Who and/or what the observation is about.
+     */
     private void _addSubjectReference(Observation fObservation, int personId) {
         fObservation.setSubject(PersonOModel.INSTANCE.getReference(personId));
     }
 
+    /**
+     * Corresponding FHIR field: Observation.code
+     * Type of observation (code / type).
+     *
+     * @see <a href="https://www.hl7.org/fhir/valueset-observation-codes.html">Available values for observation code</a>
+     */
     private void _addCode(Observation fObservation, int conceptId) {
         CodeableConcept codeable = CodeableConceptUtil.fromConceptId(conceptId);
         if (codeable == null) {
@@ -143,6 +198,10 @@ public class ObservationFModel {
         fObservation.setCode(codeable);
     }
 
+    /**
+     * Corresponding FHIR field: Observation.effectiveDateTime
+     * Clinically relevant time/time-period for observation.
+     */
     private void _addEffectiveDateTime(Observation fObservation, String date, String dateTime) {
         Date dateOrDateTime = DateTimeUtils.parseDateOrDateTime(date, dateTime);
         if (dateOrDateTime == null) {
@@ -151,6 +210,14 @@ public class ObservationFModel {
         fObservation.setEffective(new DateTimeType(dateOrDateTime));
     }
 
+    /**
+     * Corresponding FHIR field: Observation.category
+     * Classification of type of observation. OBSERVATION.observation_type_concept_id can be used to determine the
+     * provenance of the Observation record, as in whether the measurement was from an EHR system, insurance claim,
+     * registry, or other sources.
+     *
+     * @see <a href="https://www.hl7.org/fhir/valueset-observation-category.html">Available values for observation category</a>
+     */
     private void _addCategory(Observation fObservation, ObservationEntity oObservation) {
         CodeableConcept categoryCodeable = CodeableConceptUtil.fromConceptId(oObservation.observation_type_concept_id);
         if (categoryCodeable == null) {
@@ -159,6 +226,11 @@ public class ObservationFModel {
         fObservation.addCategory(categoryCodeable);
     }
 
+    /**
+     * Corresponding FHIR field: Observation.meta.source
+     * MEASUREMENT.measurement_type_concept_id can be used to determine the provenance of the Measurement record, as in
+     * whether the measurement was from an EHR system, insurance claim, registry, or other sources.
+     */
     private void _addSource(Observation observation, MeasurementEntity measurement) {
         CodeableConcept measurementTypeCodeable = CodeableConceptUtil.fromConceptId(measurement.measurement_type_concept_id);
         if (measurementTypeCodeable == null) {
