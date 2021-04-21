@@ -11,7 +11,7 @@ import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.engine.entity.DrugExposureEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.model.business.omop.VisitOccurrenceOModel;
-import com.vgu.cs.ma.service.util.CodeableConceptUtil;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestDispenseRequestComponent;
 
@@ -101,7 +101,7 @@ public class MedicationStatementFModel {
      * that occurred.
      */
     private void _addDrugExtension(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
-        CodeableConcept drugCodeable = CodeableConceptUtil.fromText(drugExposure.drug_source_value);
+        CodeableConcept drugCodeable = CodeableConceptUtils.fromText(drugExposure.drug_source_value);
         if (drugCodeable == null) {
             return;
         }
@@ -118,7 +118,7 @@ public class MedicationStatementFModel {
      * id which represents a drug product or molecule otherwise introduced to the body.
      */
     private void _addMedicationCodeableConcept(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
-        CodeableConcept medicationCodeable = CodeableConceptUtil.fromConceptId(drugExposure.drug_concept_id);
+        CodeableConcept medicationCodeable = CodeableConceptUtils.fromConceptId(drugExposure.drug_concept_id);
         if (medicationCodeable == null) {
             return;
         }

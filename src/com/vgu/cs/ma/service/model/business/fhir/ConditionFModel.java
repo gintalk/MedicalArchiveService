@@ -5,7 +5,7 @@ import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.ConditionOccurrenceEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.model.business.omop.ProviderOModel;
-import com.vgu.cs.ma.service.util.CodeableConceptUtil;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 
@@ -99,7 +99,7 @@ public class ConditionFModel {
      * @see <a href="https://www.hl7.org/fhir/valueset-condition-code.html">Available values for condition code</a>
      */
     private void _addCode(Condition condition, ConditionOccurrenceEntity conditionOccurrence) {
-        CodeableConcept conditionCodeable = CodeableConceptUtil.fromConceptId(conditionOccurrence.condition_concept_id);
+        CodeableConcept conditionCodeable = CodeableConceptUtils.fromConceptId(conditionOccurrence.condition_concept_id);
         if (conditionCodeable == null) {
             return;
         }
@@ -142,7 +142,7 @@ public class ConditionFModel {
      * as in whether the condition was from an EHR system, insurance claim, registry, or other sources.
      */
     private void _addRawValueExtension(Condition condition, ConditionOccurrenceEntity conditionOccurrence) {
-        CodeableConcept conditionTypeCodeable = CodeableConceptUtil.fromConceptId(conditionOccurrence.condition_type_concept_id);
+        CodeableConcept conditionTypeCodeable = CodeableConceptUtils.fromConceptId(conditionOccurrence.condition_type_concept_id);
         if (conditionTypeCodeable == null) {
             return;
         }
@@ -159,7 +159,7 @@ public class ConditionFModel {
      * the source data. Note that a Stop Reason does not necessarily imply that the condition is no longer occurring.
      */
     private void _addAbatementReasonExtension(Condition condition, ConditionOccurrenceEntity conditionOccurrence) {
-        CodeableConcept stopReasonCodeable = CodeableConceptUtil.fromText(conditionOccurrence.stop_reason);
+        CodeableConcept stopReasonCodeable = CodeableConceptUtils.fromText(conditionOccurrence.stop_reason);
         if (stopReasonCodeable == null) {
             return;
         }

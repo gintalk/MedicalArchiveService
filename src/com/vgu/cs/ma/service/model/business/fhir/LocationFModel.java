@@ -11,7 +11,7 @@ import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.CareSiteEntity;
 import com.vgu.cs.engine.entity.LocationEntity;
 import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
-import com.vgu.cs.ma.service.util.CodeableConceptUtil;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Location;
@@ -90,7 +90,7 @@ public class LocationFModel {
      * this granularity should be reflected in the visit.
      */
     private void _addTypeCodeable(Location location, CareSiteEntity careSite) {
-        CodeableConcept typeCodeable = CodeableConceptUtil.fromConceptId(careSite.place_of_service_concept_id);
+        CodeableConcept typeCodeable = CodeableConceptUtils.fromConceptId(careSite.place_of_service_concept_id);
         if (typeCodeable == null) {
             return;
         }

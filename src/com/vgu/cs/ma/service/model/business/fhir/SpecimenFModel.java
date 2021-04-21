@@ -11,7 +11,7 @@ import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.SpecimenEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
-import com.vgu.cs.ma.service.util.CodeableConceptUtil;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.*;
 
 import java.util.Date;
@@ -68,7 +68,7 @@ public class SpecimenFModel {
      * Corresponding FHIR field: Specimen.Extension (Proposed Name: disease-status-code : CodeableConcept)
      */
     private void _addDiseaseStatusExtension(Specimen fSpecimen, SpecimenEntity oSpecimen) {
-        CodeableConcept diseaseStatusCodeable = CodeableConceptUtil.fromConceptId(oSpecimen.disease_status_concept_id);
+        CodeableConcept diseaseStatusCodeable = CodeableConceptUtils.fromConceptId(oSpecimen.disease_status_concept_id);
         if (diseaseStatusCodeable == null) {
             return;
         }
@@ -100,7 +100,7 @@ public class SpecimenFModel {
      * @see <a href="https://www.hl7.org/fhir/v2/0487/index.html">Available values for specimen type</a>
      */
     private void _addType(Specimen fSpecimen, SpecimenEntity oSpecimen) {
-        CodeableConcept specimenCodeable = CodeableConceptUtil.fromConceptId(oSpecimen.specimen_concept_id);
+        CodeableConcept specimenCodeable = CodeableConceptUtils.fromConceptId(oSpecimen.specimen_concept_id);
         if (specimenCodeable == null) {
             return;
         }
@@ -116,7 +116,7 @@ public class SpecimenFModel {
      * Corresponding FHIR field: Specimen.Extension (Proposed Name: source-data-type : CodeableConcept)
      */
     private void _addTypeExtension(Specimen fSpecimen, SpecimenEntity oSpecimen) {
-        CodeableConcept typeCodeable = CodeableConceptUtil.fromConceptId(oSpecimen.specimen_type_concept_id);
+        CodeableConcept typeCodeable = CodeableConceptUtils.fromConceptId(oSpecimen.specimen_type_concept_id);
         if (typeCodeable == null) {
             return;
         }
@@ -147,7 +147,7 @@ public class SpecimenFModel {
         SimpleQuantity quantity = new SimpleQuantity();
         quantity.setValue(oSpecimen.quantity);
 
-        CodeableConcept quantityCodeable = CodeableConceptUtil.fromConceptId(oSpecimen.unit_concept_id);
+        CodeableConcept quantityCodeable = CodeableConceptUtils.fromConceptId(oSpecimen.unit_concept_id);
         if (quantityCodeable == null) {
             return;
         }

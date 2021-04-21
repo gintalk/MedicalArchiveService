@@ -11,7 +11,7 @@ import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.engine.entity.ConceptEntity;
 import com.vgu.cs.engine.entity.ProviderEntity;
 import com.vgu.cs.ma.service.model.data.ConceptDModel;
-import com.vgu.cs.ma.service.util.CodeableConceptUtil;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Practitioner.PractitionerQualificationComponent;
 
@@ -86,7 +86,7 @@ public class PractitionerFModel {
      * by the DEA, a US federal agency, that allows a provider to write prescriptions for controlled substances.
      */
     private void _addQualification(Practitioner practitioner, ProviderEntity provider) {
-        CodeableConcept deaCodeable = CodeableConceptUtil.fromText(provider.dea);
+        CodeableConcept deaCodeable = CodeableConceptUtils.fromText(provider.dea);
         if (deaCodeable == null) {
             return;
         }

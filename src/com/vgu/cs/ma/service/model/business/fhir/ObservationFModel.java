@@ -13,7 +13,7 @@ import com.vgu.cs.engine.entity.MeasurementEntity;
 import com.vgu.cs.engine.entity.ObservationEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.model.business.omop.ProviderOModel;
-import com.vgu.cs.ma.service.util.CodeableConceptUtil;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Observation.ObservationReferenceRangeComponent;
 
@@ -91,7 +91,7 @@ public class ObservationFModel {
      * value from the source data representing the qualifier of the Observation that occurred.
      */
     private void _addQualifierExtension(Observation fObservation, ObservationEntity oObservation) {
-        CodeableConcept qualifierCodeable = CodeableConceptUtil.fromConceptId(oObservation.qualifier_concept_id);
+        CodeableConcept qualifierCodeable = CodeableConceptUtils.fromConceptId(oObservation.qualifier_concept_id);
         if (qualifierCodeable == null) {
             return;
         }
@@ -111,7 +111,7 @@ public class ObservationFModel {
      * Actual result
      */
     private void _addValue(Observation fObservation, int unitConceptId, double valueAsNumber, String valueAsString, int valueAsConceptId) {
-        CodeableConcept unitCodeable = CodeableConceptUtil.fromConceptId(unitConceptId);
+        CodeableConcept unitCodeable = CodeableConceptUtils.fromConceptId(unitConceptId);
         if (unitCodeable == null) {
             return;
         }
@@ -123,7 +123,7 @@ public class ObservationFModel {
 
         fObservation.setValue(quantity);
 
-        CodeableConcept valueCodeable = CodeableConceptUtil.fromConceptId(valueAsConceptId);
+        CodeableConcept valueCodeable = CodeableConceptUtils.fromConceptId(valueAsConceptId);
         if (valueCodeable != null) {
             fObservation.setValue(valueCodeable);
         } else if (!StringUtils.isNullOrEmpty(valueAsString)) {
@@ -165,7 +165,7 @@ public class ObservationFModel {
      * that occurred.
      */
     private void _addMeasurementExtension(Observation observation, MeasurementEntity measurement) {
-        CodeableConcept codeable = CodeableConceptUtil.fromText(measurement.measurement_source_value);
+        CodeableConcept codeable = CodeableConceptUtils.fromText(measurement.measurement_source_value);
         if (codeable == null) {
             return;
         }
@@ -191,7 +191,7 @@ public class ObservationFModel {
      * @see <a href="https://www.hl7.org/fhir/valueset-observation-codes.html">Available values for observation code</a>
      */
     private void _addCode(Observation fObservation, int conceptId) {
-        CodeableConcept codeable = CodeableConceptUtil.fromConceptId(conceptId);
+        CodeableConcept codeable = CodeableConceptUtils.fromConceptId(conceptId);
         if (codeable == null) {
             return;
         }
@@ -219,7 +219,7 @@ public class ObservationFModel {
      * @see <a href="https://www.hl7.org/fhir/valueset-observation-category.html">Available values for observation category</a>
      */
     private void _addCategory(Observation fObservation, ObservationEntity oObservation) {
-        CodeableConcept categoryCodeable = CodeableConceptUtil.fromConceptId(oObservation.observation_type_concept_id);
+        CodeableConcept categoryCodeable = CodeableConceptUtils.fromConceptId(oObservation.observation_type_concept_id);
         if (categoryCodeable == null) {
             return;
         }
@@ -232,7 +232,7 @@ public class ObservationFModel {
      * whether the measurement was from an EHR system, insurance claim, registry, or other sources.
      */
     private void _addSource(Observation observation, MeasurementEntity measurement) {
-        CodeableConcept measurementTypeCodeable = CodeableConceptUtil.fromConceptId(measurement.measurement_type_concept_id);
+        CodeableConcept measurementTypeCodeable = CodeableConceptUtils.fromConceptId(measurement.measurement_type_concept_id);
         if (measurementTypeCodeable == null) {
             return;
         }

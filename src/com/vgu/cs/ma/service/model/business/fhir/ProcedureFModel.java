@@ -13,7 +13,7 @@ import com.vgu.cs.engine.entity.DeviceExposureEntity;
 import com.vgu.cs.engine.entity.ProcedureOccurrenceEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.model.business.omop.ProviderOModel;
-import com.vgu.cs.ma.service.util.CodeableConceptUtil;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.*;
 
 import java.util.Date;
@@ -98,7 +98,7 @@ public class ProcedureFModel {
      * @see <a href="https://www.hl7.org/fhir/valueset-procedure-code.html">Available values for procedure code</a>
      */
     private void _addCode(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
-        CodeableConcept procedureCodeable = CodeableConceptUtil.fromConceptId(procedureOccurrence.procedure_concept_id);
+        CodeableConcept procedureCodeable = CodeableConceptUtils.fromConceptId(procedureOccurrence.procedure_concept_id);
         if (procedureCodeable == null) {
             return;
         }
@@ -146,7 +146,7 @@ public class ProcedureFModel {
      * as in whether the procedure was from an EHR system, insurance claim, registry, or other sources.
      */
     private void _addTypeExtension(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
-        CodeableConcept typeCodeable = CodeableConceptUtil.fromConceptId(procedureOccurrence.procedure_type_concept_id);
+        CodeableConcept typeCodeable = CodeableConceptUtils.fromConceptId(procedureOccurrence.procedure_type_concept_id);
         if (typeCodeable == null) {
             return;
         }
@@ -163,7 +163,7 @@ public class ProcedureFModel {
      * administrative claims or EHR.
      */
     private void _addTypeExtension(Procedure procedure, DeviceExposureEntity deviceExposure) {
-        CodeableConcept typeCodeable = CodeableConceptUtil.fromConceptId(deviceExposure.device_type_concept_id);
+        CodeableConcept typeCodeable = CodeableConceptUtils.fromConceptId(deviceExposure.device_type_concept_id);
         if (typeCodeable == null) {
             return;
         }

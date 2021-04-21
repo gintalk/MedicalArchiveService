@@ -43,7 +43,10 @@ public class PersonOModel {
     }
     
     public Reference getReference(int personId) {
-        return new Reference(new IdType("Patient", String.valueOf(personId)));
+        Reference reference = new Reference(new IdType("Patient", String.valueOf(personId)));
+        reference.setId(String.valueOf(personId));
+        
+        return reference;
     }
     
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
