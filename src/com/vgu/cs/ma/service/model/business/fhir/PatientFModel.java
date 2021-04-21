@@ -8,7 +8,6 @@ import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
 import com.vgu.cs.ma.service.model.business.omop.ProviderOModel;
 import com.vgu.cs.ma.service.model.data.ConceptDModel;
 import com.vgu.cs.ma.service.model.data.FhirOmopCodeMapDModel;
-import com.vgu.cs.ma.service.model.data.FhirOmopVocabularyMapDModel;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 
@@ -33,22 +32,24 @@ import java.util.Calendar;
  * @see <a href="https://www.hl7.org/fhir/patient.html">FHIR Patient</a>
  */
 public class PatientFModel {
-
+    
     public static final PatientFModel INSTANCE = new PatientFModel();
     private final String US_CORE_RACE_URL;
     private final String US_CORE_ETHNICITY_URL;
-
+    
     private PatientFModel() {
         super();
-
+        
         US_CORE_RACE_URL = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race";
         US_CORE_ETHNICITY_URL = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity";
     }
-
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Public
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public Patient constructFhir(PersonEntity person) {
         Patient patient = new Patient();
-
-        _addIdentifier(patient, person);
+        
         _addIdentifier(patient, person);
         _addBirthDate(patient, person);
         _addGeneralPractitionerReference(patient, person);
@@ -56,10 +57,22 @@ public class PatientFModel {
         _addAddress(patient, person);
         _addRaceExtension(patient, person);
         _addEthnicityExtension(patient, person);
-
+        
         return patient;
     }
-
+    
+    public String getUsCoreRaceUrl() {
+        return US_CORE_RACE_URL;
+    }
+    
+    public String getUsCoreEthnicityUrl() {
+        return US_CORE_ETHNICITY_URL;
+    }
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Private
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     /**
      * Corresponding FHIR field: Patient.identifier
      * An identifier for this patient. It is assumed that every person with a different unique identifier is in fact a
@@ -67,48 +80,17 @@ public class PatientFModel {
      * in the source data.
      */
     private void _addIdentifier(Patient patient, PersonEntity person) {
-        Identifier idIdentifier = new Identifier();
-        idIdentifier.setValue(String.valueOf(person.person_id));
-        patient.addIdentifier(idIdentifier);
-
+        Identifier identifier = new Identifier();
+        identifier.setValue(String.valueOf(person.person_id));
+        patient.addIdentifier(identifier);
+        
         if (StringUtils.isNullOrEmpty(person.person_source_value)) {
             return;
         }
-
-        Identifier sourceValueIdentifier = new Identifier();
-        String[] sourceValues = person.person_source_value.trim().split("\\^");
-        if (sourceValues.length == 1) {
-            sourceValueIdentifier.setValue(sourceValues[0]);
-        } else {
-            String fhirSystem = FhirOmopVocabularyMapDModel.INSTANCE.getFhirUrlSystem(sourceValues[0]);
-
-            StringBuilder valueBuilder = new StringBuilder();
-            if (sourceValues.length > 2) {
-                String code = sourceValues[1];
-                CodeableConcept typeCodeable = new CodeableConcept();
-                Coding typeCoding = new Coding();
-
-                if ("NONE".equalsIgnoreCase(fhirSystem)) {
-                    typeCoding.setSystem(fhirSystem);
-                }
-                typeCoding.setCode(code);
-                typeCodeable.addCoding(typeCoding);
-                sourceValueIdentifier.setType(typeCodeable);
-
-                for (int i = 2; i < sourceValues.length; i++) {
-                    valueBuilder.append(sourceValues[i]);
-                }
-            } else {
-                if ("NONE".equalsIgnoreCase(fhirSystem)) {
-                    sourceValueIdentifier.setSystem(fhirSystem);
-                }
-                valueBuilder.append(sourceValues[1]);
-            }
-            sourceValueIdentifier.setValue(valueBuilder.toString());
-        }
-        patient.addIdentifier(sourceValueIdentifier);
+        
+        identifier.setId(person.person_source_value);
     }
-
+    
     /**
      * Corresponding FHIR field: Patient.birthDate
      * The date of birth for the individual.
@@ -121,19 +103,22 @@ public class PatientFModel {
             calendar.set(Calendar.YEAR, person.year_of_birth);
             calendar.set(Calendar.MONTH, person.month_of_birth - 1);
             calendar.set(Calendar.DAY_OF_MONTH, person.day_of_birth);
-
+            
             patient.setBirthDate(calendar.getTime());
         }
     }
-
+    
     /**
      * Corresponding FHIR field: Patient.generalPractitioner
      * Patient's nominated primary care provider. PERSON.provider_id refers to the last known primary care provider.
      */
     private void _addGeneralPractitionerReference(Patient patient, PersonEntity person) {
+        if (person.provider_id <= 0) {
+            return;
+        }
         patient.addGeneralPractitioner(ProviderOModel.INSTANCE.getReference(person.provider_id));
     }
-
+    
     /**
      * Corresponding FHIR field: Patient.gender
      * PERSON.gender_concept_id is meant to capture the biological sex at birth of the Person.
@@ -148,7 +133,7 @@ public class PatientFModel {
             patient.setGender(AdministrativeGender.fromCode(genderConcept.concept_name.toLowerCase()));
         }
     }
-
+    
     /**
      * Corresponding FHIR field: Patient.address
      * An address for the individual. PERSON.location_id refers to the physical address of the person. This field
@@ -157,65 +142,67 @@ public class PatientFModel {
     private void _addAddress(Patient patient, PersonEntity person) {
         patient.addAddress(LocationOModel.INSTANCE.getAddress(person.location_id));
     }
-
+    
     /**
      * Corresponding FHIR field: Patient.extension: us-core-race
      * PERSON.race_concept_id captures race or ethnic background of the person. PERSON.race_source_value is used to
      * store the race of the person from the source data and should be used for reference only.
+     *
      * @see <a href="https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-race.html">Structure Definition: us-core-race</a>
      */
     private void _addRaceExtension(Patient patient, PersonEntity person) {
         ConceptEntity raceConcept = ConceptDModel.INSTANCE.getConcept(person.race_concept_id);
-
+        
         Coding raceCoding;
         if (raceConcept == null) {
             raceCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopSourceValue(person.race_source_value);
         } else {
             raceCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopConcept(person.race_concept_id);
         }
-
+        
         Extension ombCatExtension = new Extension();
         ombCatExtension.setUrl("ombCategory");
         ombCatExtension.setValue(raceCoding);
-
+        
         Extension textExtension = new Extension();
         textExtension.setUrl("text");
         textExtension.setValue(new StringType(raceCoding.getDisplay()));
-
+        
         Extension raceExtension = new Extension();
         raceExtension.setUrl(US_CORE_RACE_URL).addExtension(ombCatExtension).addExtension(textExtension);
-
+        
         patient.addExtension(raceExtension);
     }
-
+    
     /**
      * Corresponding FHIR field: Patient.extension: us-core-ethnicity
      * PERSON.ethnicity_concept_id captures Ethnicity as defined by the Office of Management and Budget (OMB) of the US
      * Government. PERSON.ethnicity_source_value is used to store the ethnicity of the person from the source data and
      * should be used for reference only.
+     *
      * @see <a href="https://www.hl7.org/fhir/us/core/StructureDefinition-us-core-ethnicity.html>Structure Definition: us-core-ethnicity</a>
      */
     private void _addEthnicityExtension(Patient patient, PersonEntity person) {
         ConceptEntity ethnicityConcept = ConceptDModel.INSTANCE.getConcept(person.ethnicity_concept_id);
-
+        
         Coding ethnicityCoding;
         if (ethnicityConcept == null) {
             ethnicityCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopSourceValue(person.ethnicity_source_value);
         } else {
-            ethnicityCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopConcept(person.ethnicity_concept_id);
+            ethnicityCoding = FhirOmopCodeMapDModel.INSTANCE.getFhirCodingFromOmopConcept(ethnicityConcept.concept_id);
         }
-
+        
         Extension ombCatExtension = new Extension();
         ombCatExtension.setUrl("ombCategory");
         ombCatExtension.setValue(ethnicityCoding);
-
+        
         Extension textExtension = new Extension();
         textExtension.setUrl("text");
         textExtension.setValue(new StringType(ethnicityCoding.getDisplay()));
-
+        
         Extension ethnicityExtension = new Extension();
         ethnicityExtension.setUrl(US_CORE_ETHNICITY_URL).addExtension(ombCatExtension).addExtension(textExtension);
-
+        
         patient.addExtension(ethnicityExtension);
     }
 }

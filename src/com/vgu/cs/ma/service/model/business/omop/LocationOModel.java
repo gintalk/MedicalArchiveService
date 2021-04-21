@@ -31,6 +31,7 @@ public class LocationOModel {
         }
 
         Address address = new Address();
+        address.setId(String.valueOf(locationId));
         address.setUse(Address.AddressUse.HOME);
         address.setCity(location.city);
         address.setState(location.state);

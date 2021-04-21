@@ -13,22 +13,24 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Reference;
 
 public class ProviderOModel {
-
+    
     public static final ProviderOModel INSTANCE = new ProviderOModel();
-
+    
     private ProviderOModel() {
-
+    
     }
-
+    
     public Reference getReference(int providerId) {
         Reference reference = new Reference(new IdType("Practitioner", String.valueOf(providerId)));
-
+        
         ProviderEntity provider = ProviderDModel.INSTANCE.getProvider(providerId);
         if (provider == null) {
             return reference;
         }
+        
+        reference.setId(String.valueOf(providerId));
         reference.setDisplay(provider.provider_name);
-
+        
         return reference;
     }
 }
