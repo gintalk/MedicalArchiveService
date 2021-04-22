@@ -85,7 +85,7 @@ public class AdverseEventFModel {
         deathTypeExtension.setValue(deathTypeCodeable);
         
         AdverseEventSuspectEntityComponent component = new AdverseEventSuspectEntityComponent();
-        component.setUserData("name", "deathType");
+        component.setUserData("name", "death-type");
         component.addExtension(deathTypeExtension);
         
         adverseEvent.addSuspectEntity(component);

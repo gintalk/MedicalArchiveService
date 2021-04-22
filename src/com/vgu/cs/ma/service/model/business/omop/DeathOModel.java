@@ -72,7 +72,7 @@ public class DeathOModel {
         
         CodeableConcept deathTypeCodeable = null;
         for (AdverseEvent.AdverseEventSuspectEntityComponent component : components) {
-            if (!"deathType".equals(component.getUserString("name"))) {
+            if (!"death-type".equals(component.getUserString("name"))) {
                 continue;
             }
             

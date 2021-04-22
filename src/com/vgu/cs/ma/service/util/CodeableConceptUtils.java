@@ -51,4 +51,8 @@ public class CodeableConceptUtils {
         
         return ConvertUtils.toInteger(coding.getId());
     }
+    
+    public static String getText(CodeableConcept codeable){
+        return codeable.getText();
+    }
 }

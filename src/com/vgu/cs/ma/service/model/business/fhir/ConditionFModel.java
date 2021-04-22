@@ -148,7 +148,8 @@ public class ConditionFModel {
         }
 
         Extension rawValueExtension = new Extension();
-        rawValueExtension.setProperty("raw-value", conditionTypeCodeable);
+        rawValueExtension.setUserData("name", "raw-value");
+        rawValueExtension.setValue(conditionTypeCodeable);
 
         condition.addExtension(rawValueExtension);
     }
@@ -165,7 +166,8 @@ public class ConditionFModel {
         }
 
         Extension abatementReasonExtension = new Extension();
-        abatementReasonExtension.setProperty("abatement-reason", stopReasonCodeable);
+        abatementReasonExtension.setUserData("name", "abatement-reason");
+        abatementReasonExtension.setValue(stopReasonCodeable);
 
         condition.addExtension(abatementReasonExtension);
     }
