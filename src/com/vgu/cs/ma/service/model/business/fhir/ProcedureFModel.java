@@ -8,7 +8,6 @@ package com.vgu.cs.ma.service.model.business.fhir;
  */
 
 import com.vgu.cs.common.util.DateTimeUtils;
-import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.DeviceExposureEntity;
 import com.vgu.cs.engine.entity.ProcedureOccurrenceEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
@@ -39,16 +38,16 @@ import java.util.Date;
  * @see <a href="https://www.hl7.org/fhir/procedure.html">FHIR Procedure</a>
  */
 public class ProcedureFModel {
-
+    
     public static final ProcedureFModel INSTANCE = new ProcedureFModel();
-
+    
     private ProcedureFModel() {
-
+    
     }
-
+    
     public Procedure constructFhir(ProcedureOccurrenceEntity procedureOccurrence) {
         Procedure procedure = new Procedure();
-
+        
         _addId(procedure, procedureOccurrence.procedure_occurrence_id);
         _addSubjectReference(procedure, procedureOccurrence.person_id);
         _addCode(procedure, procedureOccurrence);
@@ -56,23 +55,23 @@ public class ProcedureFModel {
         _addTypeExtension(procedure, procedureOccurrence);
         _addQuantity(procedure, procedureOccurrence.quantity);
         _addPerformerActor(procedure, procedureOccurrence.provider_id);
-
+        
         return procedure;
     }
-
+    
     public Procedure constructFhir(DeviceExposureEntity deviceExposure) {
         Procedure procedure = new Procedure();
-
+        
         _addId(procedure, deviceExposure.device_exposure_id);
         _addQuantity(procedure, deviceExposure.quantity);
         _addPerformerActor(procedure, deviceExposure.provider_id);
         _addSubjectReference(procedure, deviceExposure.person_id);
         _addPerformedPeriod(procedure, deviceExposure);
         _addTypeExtension(procedure, deviceExposure);
-
+        
         return procedure;
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.id
      * External identifiers for this procedure.
@@ -80,7 +79,7 @@ public class ProcedureFModel {
     private void _addId(Procedure procedure, int id) {
         procedure.setId(new IdType(id));
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.subject
      * Who the procedure was performed on.
@@ -88,7 +87,7 @@ public class ProcedureFModel {
     private void _addSubjectReference(Procedure procedure, int personId) {
         procedure.setSubject(PersonOModel.INSTANCE.getReference(personId));
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.code
      * Identification of the procedure. PROCEDURE_OCCURRENCE.procedure_concept_id is the standard concept mapped from
@@ -98,18 +97,14 @@ public class ProcedureFModel {
      * @see <a href="https://www.hl7.org/fhir/valueset-procedure-code.html">Available values for procedure code</a>
      */
     private void _addCode(Procedure procedure, ProcedureOccurrenceEntity procedureOccurrence) {
-        CodeableConcept procedureCodeable = CodeableConceptUtils.fromConceptId(procedureOccurrence.procedure_concept_id);
+        CodeableConcept procedureCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(procedureOccurrence.procedure_concept_id, procedureOccurrence.procedure_source_value);
         if (procedureCodeable == null) {
             return;
         }
-
-        if (!StringUtils.isNullOrEmpty(procedureOccurrence.procedure_source_value)) {
-            procedureCodeable.setId(procedureOccurrence.procedure_source_value);
-        }
-
+        
         procedure.setCode(procedureCodeable);
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.performedDateTime
      * When the procedure was performed.
@@ -121,25 +116,25 @@ public class ProcedureFModel {
         }
         procedure.setPerformed(new DateTimeType(dateOrDateTime));
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.performedPeriod
      * When the procedure was performed.
      */
     private void _addPerformedPeriod(Procedure procedure, DeviceExposureEntity deviceExposure) {
         Period period = procedure.getPerformedPeriod();
-
+        
         Date start = DateTimeUtils.parseDateOrDateTime(deviceExposure.device_exposure_start_date, deviceExposure.device_exposure_start_datetime);
         if (start != null) {
             period.setStart(start);
         }
-
+        
         Date end = DateTimeUtils.parseDateOrDateTime(deviceExposure.device_exposure_end_date, deviceExposure.device_exposure_end_datetime);
         if (end != null) {
             period.setEnd(end);
         }
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.Extension (Proposed Name: source-data-type : CodeableConcept)
      * PROCEDURE_OCCURRENCE.procedure_type_concept_id  can be used to determine the provenance of the Procedure record,
@@ -150,13 +145,13 @@ public class ProcedureFModel {
         if (typeCodeable == null) {
             return;
         }
-
+        
         Extension typeExtension = new Extension();
         typeExtension.setProperty("source-data-type", typeCodeable);
-
+        
         procedure.addExtension(typeExtension);
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.Extension (Proposed Name: raw-value : CodeableConcept)
      * DEVICE_EXPOSURE.device_type_concept_id denotes the provenance of the record, as in whether the record is from
@@ -167,26 +162,27 @@ public class ProcedureFModel {
         if (typeCodeable == null) {
             return;
         }
-
+        
         Extension typeExtension = new Extension();
-        typeExtension.setProperty("raw-value", typeCodeable);
-
+        typeExtension.setUserData("name", "raw-value");
+        typeExtension.setValue(typeCodeable);
+        
         procedure.addExtension(typeExtension);
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.Extension (Proposed Name: num-of-procedures : CodeableConcept)
      */
     private void _addQuantity(Procedure procedure, int quantity) {
         CodeableConcept quantityCodeable = new CodeableConcept();
         quantityCodeable.setText(String.valueOf(quantity));
-
+        
         Extension quantityExtension = new Extension();
         quantityExtension.setProperty("num-of-procedures", quantityCodeable);
-
+        
         procedure.addExtension(quantityExtension);
     }
-
+    
     /**
      * Corresponding FHIR field: Procedure.performer.actor
      * The people who performed the procedure.

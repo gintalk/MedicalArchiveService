@@ -99,14 +99,11 @@ public class ConditionFModel {
      * @see <a href="https://www.hl7.org/fhir/valueset-condition-code.html">Available values for condition code</a>
      */
     private void _addCode(Condition condition, ConditionOccurrenceEntity conditionOccurrence) {
-        CodeableConcept conditionCodeable = CodeableConceptUtils.fromConceptId(conditionOccurrence.condition_concept_id);
+        CodeableConcept conditionCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(conditionOccurrence.condition_concept_id, conditionOccurrence.condition_source_value);
         if (conditionCodeable == null) {
             return;
         }
 
-        if (!StringUtils.isNullOrEmpty(conditionOccurrence.condition_source_value)) {
-            conditionCodeable.setId(conditionOccurrence.condition_source_value);
-        }
         condition.setCode(conditionCodeable);
     }
 

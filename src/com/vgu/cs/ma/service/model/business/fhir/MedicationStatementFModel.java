@@ -118,7 +118,7 @@ public class MedicationStatementFModel {
      * id which represents a drug product or molecule otherwise introduced to the body.
      */
     private void _addMedicationCodeableConcept(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
-        CodeableConcept medicationCodeable = CodeableConceptUtils.fromConceptId(drugExposure.drug_concept_id);
+        CodeableConcept medicationCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(drugExposure.drug_concept_id, drugExposure.drug_source_value);
         if (medicationCodeable == null) {
             return;
         }

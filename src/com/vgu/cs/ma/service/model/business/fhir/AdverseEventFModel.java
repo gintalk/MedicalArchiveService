@@ -9,7 +9,6 @@ import org.hl7.fhir.dstu3.model.AdverseEvent;
 import org.hl7.fhir.dstu3.model.AdverseEvent.AdverseEventSuspectEntityComponent;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Extension;
-import org.hl7.fhir.dstu3.model.StringType;
 
 import java.util.Date;
 
@@ -97,13 +96,9 @@ public class AdverseEventFModel {
      * Person’s cause of death.
      */
     private void _addCauseComponent(AdverseEvent adverseEvent, DeathEntity death) {
-        CodeableConcept causeCodeable = CodeableConceptUtils.fromConceptId(death.cause_concept_id);
+        CodeableConcept causeCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(death.cause_concept_id, death.cause_source_value);
         if (causeCodeable == null) {
             return;
-        }
-        
-        if (!StringUtils.isNullOrEmpty(death.cause_source_value)) {
-            causeCodeable.setId(death.cause_source_value);
         }
         
         Extension causeExtension = new Extension();

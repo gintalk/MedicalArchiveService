@@ -5,16 +5,17 @@
  * @author namnh16 on 04/03/2021
  */
 
-import com.vgu.cs.engine.entity.ConditionOccurrenceEntity;
-import com.vgu.cs.ma.service.model.business.fhir.ConditionFModel;
-import com.vgu.cs.ma.service.model.business.omop.ConditionOccurrenceOModel;
-import com.vgu.cs.ma.service.model.data.ConditionOccurrenceDModel;
+import com.vgu.cs.engine.entity.VisitOccurrenceEntity;
+import com.vgu.cs.ma.service.model.business.fhir.EncounterFModel;
+import com.vgu.cs.ma.service.model.business.omop.VisitOccurrenceOModel;
+import com.vgu.cs.ma.service.model.data.VisitOccurrenceDModel;
 
 public class Logic {
     
     public static void main(String[] args) {
-        ConditionOccurrenceEntity omop = ConditionOccurrenceDModel.INSTANCE.getConditionOccurrence(4);
+        VisitOccurrenceEntity omop = VisitOccurrenceDModel.INSTANCE.getVisitOccurrence(1);
         System.out.println(omop);
-        System.out.println(ConditionOccurrenceOModel.INSTANCE.constructOMOP(ConditionFModel.INSTANCE.constructFhir(omop)));
+        omop.discharge_to_concept_id = 1;
+        System.out.println(VisitOccurrenceOModel.INSTANCE.constructOMOP(EncounterFModel.INSTANCE.constructFhir(omop)));
     }
 }

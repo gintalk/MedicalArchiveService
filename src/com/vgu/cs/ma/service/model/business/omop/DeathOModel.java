@@ -49,7 +49,7 @@ public class DeathOModel {
             return;
         }
         
-        death.person_id = ConvertUtils.toInteger(subjectReference.getId());
+        death.person_id = ConvertUtils.toInteger(PersonOModel.INSTANCE.getIdFromReference(subjectReference));
     }
     
     /**

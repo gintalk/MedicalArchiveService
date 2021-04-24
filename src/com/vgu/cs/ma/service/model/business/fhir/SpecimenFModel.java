@@ -8,7 +8,6 @@ package com.vgu.cs.ma.service.model.business.fhir;
  */
 
 import com.vgu.cs.common.util.DateTimeUtils;
-import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.SpecimenEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
@@ -35,16 +34,16 @@ import java.util.Date;
  * @see <a href="https://www.hl7.org/fhir/specimen.html">FHIR Specimen</a>
  */
 public class SpecimenFModel {
-
+    
     public static final SpecimenFModel INSTANCE = new SpecimenFModel();
-
+    
     private SpecimenFModel() {
-
+    
     }
-
+    
     public Specimen constructFhir(SpecimenEntity oSpecimen) {
         Specimen fSpecimen = new Specimen();
-
+        
         _addId(fSpecimen, oSpecimen);
         _addDiseaseStatusExtension(fSpecimen, oSpecimen);
         _addSubjectReference(fSpecimen, oSpecimen);
@@ -52,10 +51,10 @@ public class SpecimenFModel {
         _addTypeExtension(fSpecimen, oSpecimen);
         _addCollectedDateTime(fSpecimen, oSpecimen);
         _addQuantity(fSpecimen, oSpecimen);
-
+        
         return fSpecimen;
     }
-
+    
     /**
      * Corresponding FHIR field: Specimen.id
      * Unique identifier for each specimen.
@@ -63,26 +62,23 @@ public class SpecimenFModel {
     private void _addId(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         fSpecimen.setId(new IdType(oSpecimen.specimen_id));
     }
-
+    
     /**
      * Corresponding FHIR field: Specimen.Extension (Proposed Name: disease-status-code : CodeableConcept)
      */
     private void _addDiseaseStatusExtension(Specimen fSpecimen, SpecimenEntity oSpecimen) {
-        CodeableConcept diseaseStatusCodeable = CodeableConceptUtils.fromConceptId(oSpecimen.disease_status_concept_id);
+        CodeableConcept diseaseStatusCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(oSpecimen.disease_status_concept_id, oSpecimen.disease_status_source_value);
         if (diseaseStatusCodeable == null) {
             return;
         }
-
-        if (!StringUtils.isNullOrEmpty(oSpecimen.disease_status_source_value)) {
-            diseaseStatusCodeable.setId(oSpecimen.disease_status_source_value);
-        }
-
+        
         Extension diseaseStatusCodeExtension = new Extension();
-        diseaseStatusCodeExtension.setProperty("disease-status-code", diseaseStatusCodeable);
-
+        diseaseStatusCodeExtension.setUserData("name", "disease-status-code");
+        diseaseStatusCodeExtension.setValue(diseaseStatusCodeable);
+        
         fSpecimen.addExtension(diseaseStatusCodeExtension);
     }
-
+    
     /**
      * Corresponding FHIR field: Specimen.subject
      * Where the specimen came from. This may be from patient(s), from a location (e.g., the source of an environmental
@@ -92,7 +88,7 @@ public class SpecimenFModel {
     private void _addSubjectReference(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         fSpecimen.setSubject(PersonOModel.INSTANCE.getReference(oSpecimen.person_id));
     }
-
+    
     /**
      * Corresponding FHIR field: Specimen.type
      * Kind of material that forms the specimen.
@@ -100,18 +96,14 @@ public class SpecimenFModel {
      * @see <a href="https://www.hl7.org/fhir/v2/0487/index.html">Available values for specimen type</a>
      */
     private void _addType(Specimen fSpecimen, SpecimenEntity oSpecimen) {
-        CodeableConcept specimenCodeable = CodeableConceptUtils.fromConceptId(oSpecimen.specimen_concept_id);
+        CodeableConcept specimenCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(oSpecimen.specimen_concept_id, oSpecimen.specimen_source_value);
         if (specimenCodeable == null) {
             return;
         }
-
-        if (!StringUtils.isNullOrEmpty(oSpecimen.specimen_source_value)) {
-            specimenCodeable.setId(oSpecimen.specimen_source_value);
-        }
-
+        
         fSpecimen.setType(specimenCodeable);
     }
-
+    
     /**
      * Corresponding FHIR field: Specimen.Extension (Proposed Name: source-data-type : CodeableConcept)
      */
@@ -120,13 +112,14 @@ public class SpecimenFModel {
         if (typeCodeable == null) {
             return;
         }
-
+        
         Extension sourceDataTypeExtension = new Extension();
-        sourceDataTypeExtension.setProperty("source-data-type", typeCodeable);
-
+        sourceDataTypeExtension.setUserData("name", "source-data-type");
+        sourceDataTypeExtension.setValue(typeCodeable);
+        
         fSpecimen.addExtension(sourceDataTypeExtension);
     }
-
+    
     /**
      * Corresponding FHIR field: Specimen.collection.collectedDateTime
      * The date the specimen was collected.
@@ -138,7 +131,7 @@ public class SpecimenFModel {
         }
         fSpecimen.getCollection().setCollected(new DateTimeType(dateOrDateTime));
     }
-
+    
     /**
      * Corresponding FHIR field: Specimen.collection.quantity
      * The quantity of specimen collected.
@@ -146,15 +139,15 @@ public class SpecimenFModel {
     private void _addQuantity(Specimen fSpecimen, SpecimenEntity oSpecimen) {
         SimpleQuantity quantity = new SimpleQuantity();
         quantity.setValue(oSpecimen.quantity);
-
-        CodeableConcept quantityCodeable = CodeableConceptUtils.fromConceptId(oSpecimen.unit_concept_id);
+        
+        CodeableConcept quantityCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(oSpecimen.unit_concept_id, oSpecimen.unit_source_value);
         if (quantityCodeable == null) {
             return;
         }
-
+        
         quantity.setSystem(quantityCodeable.getCodingFirstRep().getSystem());
         quantity.setUnit(quantityCodeable.getCodingFirstRep().getDisplay());
-
+        
         fSpecimen.getCollection().setQuantity(quantity);
     }
 }

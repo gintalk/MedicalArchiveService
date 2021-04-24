@@ -19,7 +19,7 @@ public class LocationOModel {
     private LocationOModel() {
 
     }
-
+    
     public Address getAddress(int locationId) {
         if (locationId < 0) {
             return null;

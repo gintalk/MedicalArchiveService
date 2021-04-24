@@ -18,9 +18,20 @@ import org.hl7.fhir.dstu3.model.Coding;
 public class CodeableConceptUtils {
     
     public static CodeableConcept fromConceptId(int conceptId) {
+        return fromConceptIdAndSourceValue(conceptId, "");
+    }
+    
+    public static CodeableConcept fromConceptIdAndSourceValue(int conceptId, String sourceValue) {
+        CodeableConcept codeable = new CodeableConcept();
+        codeable.setId(sourceValue);
+        
+        if (conceptId <= 0) {
+            return codeable;
+        }
+        
         ConceptEntity concept = ConceptDModel.INSTANCE.getConcept(conceptId);
         if (concept == null) {
-            return null;
+            return codeable;
         }
         
         Coding coding = new Coding();
@@ -32,8 +43,6 @@ public class CodeableConceptUtils {
         if (!StringUtils.isNullOrEmpty(fhirUrlSystem)) {
             coding.setSystem(fhirUrlSystem);
         }
-        
-        CodeableConcept codeable = new CodeableConcept();
         codeable.addCoding(coding);
         
         return codeable;
@@ -52,7 +61,7 @@ public class CodeableConceptUtils {
         return ConvertUtils.toInteger(coding.getId());
     }
     
-    public static String getText(CodeableConcept codeable){
+    public static String getText(CodeableConcept codeable) {
         return codeable.getText();
     }
 }

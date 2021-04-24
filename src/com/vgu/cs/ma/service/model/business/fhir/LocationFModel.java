@@ -90,13 +90,9 @@ public class LocationFModel {
      * this granularity should be reflected in the visit.
      */
     private void _addTypeCodeable(Location location, CareSiteEntity careSite) {
-        CodeableConcept typeCodeable = CodeableConceptUtils.fromConceptId(careSite.place_of_service_concept_id);
+        CodeableConcept typeCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(careSite.place_of_service_concept_id, careSite.place_of_service_source_value);
         if (typeCodeable == null) {
             return;
-        }
-
-        if (!StringUtils.isNullOrEmpty(careSite.place_of_service_source_value)) {
-            typeCodeable.setId(careSite.place_of_service_source_value);
         }
 
         location.setType(typeCodeable);
