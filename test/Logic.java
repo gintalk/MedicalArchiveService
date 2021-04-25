@@ -5,25 +5,31 @@
  * @author namnh16 on 04/03/2021
  */
 
-import com.vgu.cs.engine.entity.CareSiteEntity;
-import com.vgu.cs.engine.entity.DrugExposureEntity;
-import com.vgu.cs.engine.entity.LocationEntity;
-import com.vgu.cs.engine.entity.VisitOccurrenceEntity;
+import ca.uhn.fhir.context.FhirContext;
+import com.vgu.cs.engine.entity.*;
 import com.vgu.cs.ma.service.model.business.fhir.EncounterFModel;
 import com.vgu.cs.ma.service.model.business.fhir.LocationFModel;
 import com.vgu.cs.ma.service.model.business.fhir.MedicationStatementFModel;
-import com.vgu.cs.ma.service.model.business.omop.CareSiteOModel;
-import com.vgu.cs.ma.service.model.business.omop.DrugExposureOModel;
-import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
-import com.vgu.cs.ma.service.model.business.omop.VisitOccurrenceOModel;
+import com.vgu.cs.ma.service.model.business.fhir.ObservationFModel;
+import com.vgu.cs.ma.service.model.business.omop.*;
 import com.vgu.cs.ma.service.model.data.*;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Quantity;
+import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.Type;
 
 public class Logic {
     
     public static void main(String[] args) {
-        DrugExposureEntity omop = DrugExposureDModel.INSTANCE.getDrugExposure(165);
+        ObservationEntity omop = ObservationDModel.INSTANCE.getObservation(1);
         System.out.println(omop);
-        System.out.println(DrugExposureOModel.INSTANCE.constructOmop(MedicationStatementFModel.INSTANCE.constructFhir(omop)));
+        System.out.println(ObservationOModel.INSTANCE.constructOmop(ObservationFModel.INSTANCE.constructFhir(omop)));
+    
+//        FhirContext fhirContext = FhirContext.forDstu3();
+//        System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(ObservationFModel.INSTANCE.constructFhir(ObservationDModel.INSTANCE.getObservation(1))));
+        
+//        Type type = new StringType();
+//        System.out.println(type.fhirType());
         
         System.exit(0);
     }

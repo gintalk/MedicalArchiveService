@@ -7,6 +7,7 @@ package com.vgu.cs.ma.service.model.business.omop;
  * @author namnh16 on 20/03/2021
  */
 
+import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.engine.entity.ProviderEntity;
 import com.vgu.cs.ma.service.model.data.ProviderDModel;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -32,5 +33,12 @@ public class ProviderOModel {
         reference.setDisplay(provider.provider_name);
         
         return reference;
+    }
+    
+    public int getProviderIdFromReference(Reference reference){
+        if(reference == null){
+            return 0;
+        }
+        return ConvertUtils.toInteger(reference.getId());
     }
 }

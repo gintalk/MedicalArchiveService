@@ -8,7 +8,6 @@ package com.vgu.cs.ma.service.model.business.fhir;
  */
 
 import com.vgu.cs.common.util.DateTimeUtils;
-import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.MeasurementEntity;
 import com.vgu.cs.engine.entity.ObservationEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
@@ -92,12 +91,10 @@ public class ObservationFModel {
      */
     private void _addQualifierExtension(Observation fObservation, ObservationEntity oObservation) {
         CodeableConcept qualifierCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(oObservation.qualifier_concept_id, oObservation.qualifier_source_value);
-        if (qualifierCodeable == null) {
-            return;
-        }
         
         Extension qualifierExtension = new Extension();
-        qualifierExtension.setProperty("decision-aid-alert", qualifierCodeable);
+        qualifierExtension.setUserData("name", "decision-aid-alert");
+        qualifierExtension.setValue(qualifierCodeable);
         
         fObservation.addExtension(qualifierExtension);
     }
@@ -108,25 +105,25 @@ public class ObservationFModel {
      */
     private void _addValue(Observation fObservation, int unitConceptId, String unitSourceValue, double valueAsNumber, String valueAsString, int valueAsConceptId) {
         CodeableConcept unitCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(unitConceptId, unitSourceValue);
-        if (unitCodeable == null) {
+        if (unitCodeable != null) {
+            Quantity quantity = new Quantity();
+            quantity.setSystem(unitCodeable.getCodingFirstRep().getSystem());
+            quantity.setUnit(unitCodeable.getCodingFirstRep().getDisplay());
+            quantity.setCode(unitCodeable.getCodingFirstRep().getCode());
+            quantity.setId(unitConceptId + "." + unitSourceValue);
+            quantity.setValue(valueAsNumber);
+            fObservation.setValue(quantity);
+            
             return;
         }
-        
-        Quantity quantity = new Quantity();
-        quantity.setSystem(unitCodeable.getCodingFirstRep().getSystem());
-        quantity.setUnit(unitCodeable.getCodingFirstRep().getDisplay());
-        quantity.setCode(unitCodeable.getCodingFirstRep().getCode());
-        
-        fObservation.setValue(quantity);
         
         CodeableConcept valueCodeable = CodeableConceptUtils.fromConceptId(valueAsConceptId);
         if (valueCodeable != null) {
             fObservation.setValue(valueCodeable);
-        } else if (!StringUtils.isNullOrEmpty(valueAsString)) {
-            fObservation.setValue(new StringType(valueAsString));
-        } else {
-            fObservation.getValueQuantity().setValue(valueAsNumber);
+            return;
         }
+        
+        fObservation.setValue(new StringType(valueAsString));
     }
     
     /**

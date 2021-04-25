@@ -26,6 +26,9 @@ public class CodeableConceptUtils {
         codeable.setId(sourceValue);
         
         if (conceptId <= 0) {
+            if (StringUtils.isNullOrEmpty(sourceValue)) {
+                return null;
+            }
             return codeable;
         }
         
