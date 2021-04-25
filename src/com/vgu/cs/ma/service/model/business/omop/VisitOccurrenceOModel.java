@@ -50,10 +50,17 @@ public class VisitOccurrenceOModel {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Private
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    /**
+     * VISIT_OCCURRENCE.visit_occurrence_id = Encounter.id
+     */
     private void _setId(Encounter encounter, VisitOccurrenceEntity visitOccurrence) {
         visitOccurrence.visit_occurrence_id = ConvertUtils.toInteger(encounter.getId());
     }
     
+    /**
+     * VISIT_OCCURRENCE.care_site_id = Encounter.location[0].id
+     */
     private void _setLocation(Encounter encounter, VisitOccurrenceEntity visitOccurrence) {
         Encounter.EncounterLocationComponent component = encounter.getLocationFirstRep();
         if (component == null || component.getLocation() == null) {
@@ -63,10 +70,17 @@ public class VisitOccurrenceOModel {
         visitOccurrence.care_site_id = CareSiteOModel.INSTANCE.getIdFromReference(component.getLocation());
     }
     
+    /**
+     * VISIT_OCCURRENCE.person_id = Encounter.subject.id
+     */
     private void _setPersonId(Encounter encounter, VisitOccurrenceEntity visitOccurrence) {
         visitOccurrence.person_id = PersonOModel.INSTANCE.getIdFromReference(encounter.getSubject());
     }
     
+    /**
+     * VISIT_OCCURRENCE.visit_start_date = Encounter.period.start
+     * VISIT_OCCURRENCE.visit_end_date = Encounter.period.end
+     */
     private void _setPeriod(Encounter encounter, VisitOccurrenceEntity visitOccurrence) {
         Period period = encounter.getPeriod();
         if (period == null) {
@@ -81,6 +95,9 @@ public class VisitOccurrenceOModel {
         }
     }
     
+    /**
+     * Maps Encounter.type[0] to VISIT_OCCURRENCE's visit_concept_id and visit_source_value
+     */
     private void _setConceptIdAndSourceValue(Encounter encounter, VisitOccurrenceEntity visitOccurrence) {
         CodeableConcept typeCodeable = encounter.getTypeFirstRep();
         if (typeCodeable == null) {
@@ -91,6 +108,9 @@ public class VisitOccurrenceOModel {
         visitOccurrence.visit_source_value = typeCodeable.getId();
     }
     
+    /**
+     * Maps Encounter.extension (Proposed Name: source-data-type : CodeableConcept) to VISIT_OCCURRENCE.visit_type_concept_id
+     */
     private void _setVisitTypeConceptId(Encounter encounter, VisitOccurrenceEntity visitOccurrence) {
         CodeableConcept visitTypeCodeable = null;
         for (Extension extension : encounter.getExtension()) {
@@ -108,6 +128,11 @@ public class VisitOccurrenceOModel {
         visitOccurrence.visit_type_concept_id = CodeableConceptUtils.getConceptId(visitTypeCodeable);
     }
     
+    /**
+     * Maps:
+     * - Encounter.hospitalization.admitSource to VISIT_OCCURRENCE's admitting_source_concept_id and admitting_source_value
+     * - Encounter.hospitalization.dischargeComposition to VISIT_OCCURRENCE's discharge_to_concept_id and discharge_to_source_value
+     */
     private void _setAdmittingSourceAndDischargeTo(Encounter encounter, VisitOccurrenceEntity visitOccurrence) {
         Encounter.EncounterHospitalizationComponent component = encounter.getHospitalization();
         if (component == null) {

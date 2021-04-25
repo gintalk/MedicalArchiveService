@@ -29,6 +29,9 @@ public class DeathOModel {
     
     }
     
+    /**
+     *
+     */
     public DeathEntity constructOMOP(AdverseEvent adverseEvent) {
         DeathEntity death = new DeathEntity();
         
@@ -41,7 +44,7 @@ public class DeathOModel {
     }
     
     /**
-     * Death.person_id = AdverseEvent.subject.id
+     * DEATH.person_id = AdverseEvent.subject.id
      */
     private void _setPersonId(AdverseEvent adverseEvent, DeathEntity death) {
         Reference subjectReference = adverseEvent.getSubject();
@@ -53,7 +56,7 @@ public class DeathOModel {
     }
     
     /**
-     * Maps AdverseEvent.date to Death.death_date
+     * DEATH.death_date = AdverseEvent.date
      */
     private void _setDeathDate(AdverseEvent adverseEvent, DeathEntity death) {
         Date date = adverseEvent.getDate();
@@ -64,6 +67,9 @@ public class DeathOModel {
         death.death_date = DateTimeUtils.getDateString(date);
     }
     
+    /**
+     * Maps AdverseEvent.suspectedEntity.causality.Extension (Proposed Name: cause-code : CodeableConcept) to DEATH.death_type_concept_id
+     */
     private void _setDeathType(AdverseEvent adverseEvent, DeathEntity death) {
         List<AdverseEvent.AdverseEventSuspectEntityComponent> components = adverseEvent.getSuspectEntity();
         if (CollectionUtils.isNullOrEmpty(components)) {
@@ -91,6 +97,9 @@ public class DeathOModel {
         death.death_type_concept_id = CodeableConceptUtils.getConceptId(deathTypeCodeable);
     }
     
+    /**
+     * Maps AdverseEvent.suspectedEntity.causality.Extension (Proposed Name: cause-code : CodeableConcept) to DEATH's cause_concept_id and cause_source_value
+     */
     private void _setCause(AdverseEvent adverseEvent, DeathEntity death) {
         List<AdverseEvent.AdverseEventSuspectEntityComponent> components = adverseEvent.getSuspectEntity();
         if (CollectionUtils.isNullOrEmpty(components)) {

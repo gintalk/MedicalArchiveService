@@ -75,7 +75,7 @@ public class PersonOModel {
     }
     
     /**
-     * Maps Patient.birthDate to relevant fields in Person. Self-explanatory
+     * Maps Patient.birthDate to PERSON's year_of_birth, month_of_birth, day_of_birth
      */
     private void _setBirthDate(Patient patient, PersonEntity person) {
         Date birthDate = patient.getBirthDate();
@@ -89,7 +89,7 @@ public class PersonOModel {
     }
     
     /**
-     * Person.provider_id = Patient.generalPractitioner[0].id
+     * PERSON.provider_id = Patient.generalPractitioner[0].id
      */
     private void _setProviderId(Patient patient, PersonEntity person) {
         Reference generalPractitionerReference = patient.getGeneralPractitionerFirstRep();
@@ -101,7 +101,7 @@ public class PersonOModel {
     }
     
     /**
-     * Person.gender_concept_id = Patient.gender
+     * Maps Patient.gender to PERSON.gender_concept_id
      */
     private void _setGender(Patient patient, PersonEntity person) {
         Enumerations.AdministrativeGender gender = patient.getGender();
@@ -125,7 +125,7 @@ public class PersonOModel {
     }
     
     /**
-     * Maps Patient.extension (us-core-race) to Person.race_concept_id and Person.race_source_value
+     * Maps Patient.extension (us-core-race) to PERSON's race_concept_id and race_source_value
      */
     private void _setRace(Patient patient, PersonEntity person) {
         Extension ombCatExtension = null;
@@ -158,7 +158,7 @@ public class PersonOModel {
     }
     
     /**
-     * Maps Patient.extension (us-core-ethnicity) to Person.ethnicity_concept_id and Person.ethnicity_source_value
+     * Maps Patient.extension (us-core-ethnicity) to PERSON's ethnicity_concept_id and ethnicity_source_value
      */
     private void _setEthnicity(Patient patient, PersonEntity person) {
         Extension ombCatExtension = null;

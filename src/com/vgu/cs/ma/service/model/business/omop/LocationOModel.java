@@ -13,23 +13,23 @@ import com.vgu.cs.engine.entity.LocationEntity;
 import org.hl7.fhir.dstu3.model.Address;
 
 public class LocationOModel {
-
+    
     public static final LocationOModel INSTANCE = new LocationOModel();
-
+    
     private LocationOModel() {
-
+    
     }
     
     public Address getAddress(int locationId) {
         if (locationId < 0) {
             return null;
         }
-
+        
         LocationEntity location = LocationDal.INSTANCE.get(locationId);
         if (location == null) {
             return null;
         }
-
+        
         Address address = new Address();
         address.setId(String.valueOf(locationId));
         address.setUse(Address.AddressUse.HOME);
@@ -44,7 +44,7 @@ public class LocationOModel {
         } else if (!StringUtils.isNullOrEmpty(location.address_2)) {
             address.addLine(location.address_2);
         }
-
+        
         return address;
     }
 }
