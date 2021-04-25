@@ -7,12 +7,10 @@ package com.vgu.cs.ma.service.model.business.fhir;
  * @author namnh16 on 10/03/2021
  */
 
-import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.CareSiteEntity;
 import com.vgu.cs.engine.entity.LocationEntity;
 import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Location;
 
@@ -37,43 +35,43 @@ import org.hl7.fhir.dstu3.model.Location;
  * @see <a href="https://www.hl7.org/fhir/location.html">FHIR Location</a>
  */
 public class LocationFModel {
-
+    
     public static LocationFModel INSTANCE = new LocationFModel();
-
+    
     private LocationFModel() {
     }
-
+    
     public Location constructFhir(CareSiteEntity careSite) {
         Location location = new Location();
-
+        
         _addId(location, careSite);
         _addName(location, careSite);
         _addTypeCodeable(location, careSite);
         _addAddress(location, careSite);
-
+        
         return location;
     }
-
+    
     public Location constructFhir(LocationEntity oLocation) {
         Location fLocation = new Location();
-
+        
         _addId(fLocation, oLocation);
         _addAddress(fLocation, oLocation);
-
+        
         return fLocation;
     }
-
+    
     private void _addId(Location location, CareSiteEntity careSite) {
         location.setId(new IdType(careSite.care_site_id));
     }
-
+    
     /**
      * LOCATION.location_id is the unique key given to a unique Location.
      */
     private void _addId(Location fLocation, LocationEntity oLocation) {
         fLocation.setId(new IdType(oLocation.location_id));
     }
-
+    
     /**
      * Corresponding FHIR field: Location.name
      * Name of the location as used by humans. CARE_SITE.care_site_name is the name of the care_site as it appears in
@@ -82,7 +80,7 @@ public class LocationFModel {
     private void _addName(Location location, CareSiteEntity careSite) {
         location.setName(careSite.care_site_name);
     }
-
+    
     /**
      * Corresponding FHIR field: Location.type
      * Type of function performed. CARE_SITE.place_of_service_concept_id is a high-level way of characterizing a Care
@@ -90,14 +88,9 @@ public class LocationFModel {
      * this granularity should be reflected in the visit.
      */
     private void _addTypeCodeable(Location location, CareSiteEntity careSite) {
-        CodeableConcept typeCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(careSite.place_of_service_concept_id, careSite.place_of_service_source_value);
-        if (typeCodeable == null) {
-            return;
-        }
-
-        location.setType(typeCodeable);
+        location.setType(CodeableConceptUtils.fromConceptIdAndSourceValue(careSite.place_of_service_concept_id, careSite.place_of_service_source_value));
     }
-
+    
     /**
      * Corresponding FHIR field: Location.address
      * Physical location. CARE_SITE.location_id is the location_id from the LOCATION table representing the physical
@@ -106,7 +99,7 @@ public class LocationFModel {
     private void _addAddress(Location location, CareSiteEntity careSite) {
         location.setAddress(LocationOModel.INSTANCE.getAddress(careSite.location_id));
     }
-
+    
     /**
      * Corresponding FHIR field: Location.address
      * Physical location.

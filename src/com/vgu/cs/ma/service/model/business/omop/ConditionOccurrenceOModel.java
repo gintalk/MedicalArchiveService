@@ -34,7 +34,7 @@ public class ConditionOccurrenceOModel {
      * - condition_status_source_value
      * - condition_status_concept_id
      */
-    public ConditionOccurrenceEntity constructOMOP(Condition condition) {
+    public ConditionOccurrenceEntity constructOmop(Condition condition) {
         ConditionOccurrenceEntity conditionOccurrence = new ConditionOccurrenceEntity();
         
         _setId(condition, conditionOccurrence);

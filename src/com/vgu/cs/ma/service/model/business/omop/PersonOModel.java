@@ -28,7 +28,7 @@ public class PersonOModel {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Public
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public PersonEntity constructOMOP(Patient patient) {
+    public PersonEntity constructOmop(Patient patient) {
         PersonEntity person = new PersonEntity();
         
         _setIdAndSourceValue(patient, person);

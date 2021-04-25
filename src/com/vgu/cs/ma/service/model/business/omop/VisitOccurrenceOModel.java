@@ -29,7 +29,7 @@ public class VisitOccurrenceOModel {
      * - provider_id
      * - preceding_visit_occurrence_id
      */
-    public VisitOccurrenceEntity constructOMOP(Encounter encounter) {
+    public VisitOccurrenceEntity constructOmop(Encounter encounter) {
         VisitOccurrenceEntity visitOccurrence = new VisitOccurrenceEntity();
         
         _setId(encounter, visitOccurrence);

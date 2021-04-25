@@ -32,7 +32,7 @@ public class DeathOModel {
     /**
      *
      */
-    public DeathEntity constructOMOP(AdverseEvent adverseEvent) {
+    public DeathEntity constructOmop(AdverseEvent adverseEvent) {
         DeathEntity death = new DeathEntity();
         
         _setPersonId(adverseEvent, death);

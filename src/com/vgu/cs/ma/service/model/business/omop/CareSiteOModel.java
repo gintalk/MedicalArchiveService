@@ -10,7 +10,10 @@ package com.vgu.cs.ma.service.model.business.omop;
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.engine.entity.CareSiteEntity;
 import com.vgu.cs.ma.service.model.data.CareSiteDModel;
+import com.vgu.cs.ma.service.util.CodeableConceptUtils;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Location;
 import org.hl7.fhir.dstu3.model.Reference;
 
 public class CareSiteOModel {
@@ -19,6 +22,21 @@ public class CareSiteOModel {
     
     private CareSiteOModel() {
     
+    }
+    
+    /**
+     * Unretained fields include:
+     * - care_site_source_value
+     */
+    public CareSiteEntity constructOmop(Location location) {
+        CareSiteEntity careSite = new CareSiteEntity();
+        
+        _setId(location, careSite);
+        _setName(location, careSite);
+        _setPlaceOfServiceConceptIdAndSourceValue(location, careSite);
+        _setLocationId(location, careSite);
+        
+        return careSite;
     }
     
     public Reference getReference(int careSiteId) {
@@ -39,5 +57,43 @@ public class CareSiteOModel {
             return 0;
         }
         return ConvertUtils.toInteger(reference.getId());
+    }
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Private
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    /**
+     * CARE_SITE.care_site_id = Location.id
+     */
+    private void _setId(Location location, CareSiteEntity careSite) {
+        careSite.care_site_id = ConvertUtils.toInteger(location.getId());
+    }
+    
+    /**
+     * CARE_SITE.care_site_name = Location.name
+     */
+    private void _setName(Location location, CareSiteEntity careSite) {
+        careSite.care_site_name = location.getName();
+    }
+    
+    /**
+     * Maps Location.type to CARE_SITE's place_of_service_concept_id and place_of_service_source_value
+     */
+    private void _setPlaceOfServiceConceptIdAndSourceValue(Location location, CareSiteEntity careSite) {
+        CodeableConcept typeCodeable = location.getType();
+        if (typeCodeable == null) {
+            return;
+        }
+        
+        careSite.place_of_service_concept_id = CodeableConceptUtils.getConceptId(typeCodeable);
+        careSite.place_of_service_source_value = typeCodeable.getId();
+    }
+    
+    /**
+     * CARE_SITE.location_id = Location.address.id
+     */
+    private void _setLocationId(Location location, CareSiteEntity careSite) {
+        careSite.location_id = LocationOModel.INSTANCE.getLocationIdFromAddress(location.getAddress());
     }
 }

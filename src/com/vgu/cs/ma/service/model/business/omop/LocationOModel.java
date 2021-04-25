@@ -7,6 +7,7 @@ package com.vgu.cs.ma.service.model.business.omop;
  * @author namnh16 on 16/03/2021
  */
 
+import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.dal.LocationDal;
 import com.vgu.cs.engine.entity.LocationEntity;
@@ -46,5 +47,12 @@ public class LocationOModel {
         }
         
         return address;
+    }
+    
+    public int getLocationIdFromAddress(Address address) {
+        if (address == null) {
+            return 0;
+        }
+        return ConvertUtils.toInteger(address.getId());
     }
 }
