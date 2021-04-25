@@ -12,8 +12,10 @@ import com.vgu.cs.engine.entity.DrugExposureEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.model.business.omop.VisitOccurrenceOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
-import org.hl7.fhir.dstu3.model.*;
-import org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestDispenseRequestComponent;
+import org.hl7.fhir.dstu3.model.Extension;
+import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.MedicationStatement;
+import org.hl7.fhir.dstu3.model.Period;
 
 import java.util.Date;
 
@@ -38,28 +40,27 @@ import java.util.Date;
  * @see <a href="https://www.hl7.org/fhir/medicationstatement.html">FHIR Medication Statement</a>
  */
 public class MedicationStatementFModel {
-
+    
     public static final MedicationStatementFModel INSTANCE = new MedicationStatementFModel();
-
+    
     private MedicationStatementFModel() {
-
+    
     }
-
+    
     public MedicationStatement constructFhir(DrugExposureEntity drugExposure) {
         MedicationStatement medStatement = new MedicationStatement();
-
+        
         _addId(medStatement, drugExposure);
         _addBasedOn(medStatement, drugExposure);
         _addContext(medStatement, drugExposure);
-        _addDrugExtension(medStatement, drugExposure);
         _addSubjectReference(medStatement, drugExposure);
         _addMedicationCodeableConcept(medStatement, drugExposure);
         _addEffectivePeriod(medStatement, drugExposure);
         _addMedicationCodeableConcept(medStatement, drugExposure);
-
+        
         return medStatement;
     }
-
+    
     /**
      * Corresponding FHIR field: MedicationStatement.id
      * DRUG_EXPOSURE.drug_exposure_id is the unique key given to records of drug dispensing or administrations for a person.
@@ -67,25 +68,33 @@ public class MedicationStatementFModel {
     private void _addId(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
         medStatement.setId(new IdType(drugExposure.drug_exposure_id));
     }
-
+    
     /**
-     * Corresponding FHIR field: MedicationStatement.basedOn(MedicationRequest)
-     * This is a work-in-progress.
+     * Corresponding FHIR field: MedicationStatement.basedOn (MedicationRequest)
+     * WIP
      */
     private void _addBasedOn(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
-        MedicationRequest medRequest = new MedicationRequest();
-
-        MedicationRequestDispenseRequestComponent dispenseRequest = new MedicationRequestDispenseRequestComponent();
-        dispenseRequest.setNumberOfRepeatsAllowedElement(new PositiveIntType(drugExposure.refills));
-        SimpleQuantity quantity = new SimpleQuantity();
-        quantity.setValue(drugExposure.quantity);
-        dispenseRequest.setQuantity(quantity);
-        Duration duration = new Duration();
-        duration.setValue(drugExposure.days_supply);
-        dispenseRequest.setExpectedSupplyDuration(duration);
-        medRequest.setDispenseRequest(dispenseRequest);
+//        MedicationRequest medRequest = new MedicationRequest();
+//
+//        MedicationRequestDispenseRequestComponent dispenseRequest = new MedicationRequestDispenseRequestComponent();
+//        dispenseRequest.setNumberOfRepeatsAllowedElement(new PositiveIntType(drugExposure.refills));
+//        SimpleQuantity quantity = new SimpleQuantity();
+//        quantity.setValue(drugExposure.quantity);
+//        dispenseRequest.setQuantity(quantity);
+//        Duration duration = new Duration();
+//        duration.setValue(drugExposure.days_supply);
+//        dispenseRequest.setExpectedSupplyDuration(duration);
+//        medRequest.setDispenseRequest(dispenseRequest);
+        
+        Extension basedOnExtension = new Extension();
+        basedOnExtension.setUserData("name", "based-on");
+        basedOnExtension.setUserData("number-of-repeats-allowed", drugExposure.refills);
+        basedOnExtension.setUserData("quantity", drugExposure.quantity);
+        basedOnExtension.setUserData("expected-supply-duration", drugExposure.days_supply);
+        
+        medStatement.addExtension(basedOnExtension);
     }
-
+    
     /**
      * Corresponding FHIR field: MedicationStatement.context
      * Encounter/Episode associated with MedicationStatement. DRUG_EXPOSURE.visit_occurrence_id identifies the Visit
@@ -94,37 +103,16 @@ public class MedicationStatementFModel {
     private void _addContext(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
         medStatement.setContext(VisitOccurrenceOModel.INSTANCE.getReference(drugExposure.visit_occurrence_id));
     }
-
-    /**
-     * Corresponding FHIR field: MedicationStatement.Extension (Proposed Name: raw-value : CodeableConcept)
-     * DRUG_EXPOSURE.drug_source_value houses the verbatim value from the source data representing the drug exposure
-     * that occurred.
-     */
-    private void _addDrugExtension(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
-        CodeableConcept drugCodeable = CodeableConceptUtils.fromText(drugExposure.drug_source_value);
-        if (drugCodeable == null) {
-            return;
-        }
-
-        Extension rawValueExtension = new Extension();
-        rawValueExtension.setProperty("raw-value", drugCodeable);
-
-        medStatement.addExtension(rawValueExtension);
-    }
-
+    
     /**
      * Corresponding FHIR field: MedicationStatement.medication
      * What medication was taken. DRUG_EXPOSURE.drug_concept_id is the standard concept mapped from the source concept
      * id which represents a drug product or molecule otherwise introduced to the body.
      */
     private void _addMedicationCodeableConcept(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
-        CodeableConcept medicationCodeable = CodeableConceptUtils.fromConceptIdAndSourceValue(drugExposure.drug_concept_id, drugExposure.drug_source_value);
-        if (medicationCodeable == null) {
-            return;
-        }
-        medStatement.setMedication(medicationCodeable);
+        medStatement.setMedication(CodeableConceptUtils.fromConceptIdAndSourceValue(drugExposure.drug_concept_id, drugExposure.drug_source_value));
     }
-
+    
     /**
      * Corresponding FHIR field: MedicationStatement.subject
      * Who is/was taking the medication. DRUG_EXPOSURE.person_id is the PERSON_ID of the PERSON for whom the drug
@@ -133,7 +121,7 @@ public class MedicationStatementFModel {
     private void _addSubjectReference(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
         medStatement.setSubject(PersonOModel.INSTANCE.getReference(drugExposure.person_id));
     }
-
+    
     /**
      * Corresponding FHIR field: MedicationStatement.effectivePeriod
      * The date/time or interval when the medication is/was/will be taken. DRUG_EXPOSURE.drug_exposure_start_datetime
@@ -141,13 +129,14 @@ public class MedicationStatementFModel {
      * the drug exposure ended for the patient.
      */
     private void _addEffectivePeriod(MedicationStatement medStatement, DrugExposureEntity drugExposure) {
-        Period effectivePeriod = medStatement.getEffectivePeriod();
-
+        Period effectivePeriod = new Period();
+        medStatement.setEffective(effectivePeriod);
+        
         Date start = DateTimeUtils.parseDateOrDateTime(drugExposure.drug_exposure_start_date, drugExposure.drug_exposure_start_datetime);
         if (start != null) {
             effectivePeriod.setStart(start);
         }
-
+        
         Date end = DateTimeUtils.parseDateOrDateTime(drugExposure.drug_exposure_end_date, drugExposure.drug_exposure_end_datetime);
         if (end != null) {
             effectivePeriod.setEnd(end);

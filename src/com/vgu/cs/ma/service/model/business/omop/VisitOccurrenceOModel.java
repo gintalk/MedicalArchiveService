@@ -44,7 +44,14 @@ public class VisitOccurrenceOModel {
     }
     
     public Reference getReference(int visitOccurrenceId) {
-        return new Reference(new IdType("Encounter", String.valueOf(visitOccurrenceId)));
+        Reference reference = new Reference(new IdType("Encounter", String.valueOf(visitOccurrenceId)));
+        reference.setId(String.valueOf(visitOccurrenceId));
+        
+        return reference;
+    }
+    
+    public int getVisitOccurrenceIdFromReference(Reference reference) {
+        return ConvertUtils.toInteger(reference.getId());
     }
     
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
