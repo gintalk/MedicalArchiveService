@@ -67,7 +67,6 @@ public class ObservationFModel {
         _addValue(observation, measurement.unit_concept_id, measurement.unit_source_value, measurement.value_as_number, "", measurement.value_as_concept_id);
         _addReferenceRange(observation, measurement);
         _addPerformerReference(observation, measurement.provider_id);
-        _addMeasurementExtension(observation, measurement);
         _addSubjectReference(observation, measurement.person_id);
         _addCode(observation, measurement.measurement_concept_id, measurement.measurement_source_value);
         _addEffectiveDateTime(observation, measurement.measurement_date, measurement.measurement_datetime);
@@ -150,23 +149,6 @@ public class ObservationFModel {
      */
     private void _addPerformerReference(Observation fObservation, int providerId) {
         fObservation.addPerformer(ProviderOModel.INSTANCE.getReference(providerId));
-    }
-    
-    /**
-     * Corresponding FHIR field: Observation.Extension (Proposed Name: raw-value : CodeableConcept)
-     * MEASUREMENT.measure_source_value houses the verbatim value from the source data representing the Measurement
-     * that occurred.
-     */
-    private void _addMeasurementExtension(Observation observation, MeasurementEntity measurement) {
-        CodeableConcept codeable = CodeableConceptUtils.fromText(measurement.measurement_source_value);
-        if (codeable == null) {
-            return;
-        }
-        
-        Extension rawValueExtension = new Extension();
-        rawValueExtension.setProperty("raw-value", codeable);
-        
-        observation.addExtension(rawValueExtension);
     }
     
     /**

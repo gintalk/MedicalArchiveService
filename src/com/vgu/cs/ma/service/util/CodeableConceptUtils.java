@@ -32,13 +32,15 @@ public class CodeableConceptUtils {
             return codeable;
         }
         
+        Coding coding = new Coding();
+        coding.setId(String.valueOf(conceptId));
+        codeable.addCoding(coding);
+        
         ConceptEntity concept = ConceptDModel.INSTANCE.getConcept(conceptId);
         if (concept == null) {
             return codeable;
         }
         
-        Coding coding = new Coding();
-        coding.setId(String.valueOf(conceptId));
         coding.setCode(concept.concept_code);
         coding.setDisplay(concept.concept_name);
         
@@ -46,7 +48,6 @@ public class CodeableConceptUtils {
         if (!StringUtils.isNullOrEmpty(fhirUrlSystem)) {
             coding.setSystem(fhirUrlSystem);
         }
-        codeable.addCoding(coding);
         
         return codeable;
     }

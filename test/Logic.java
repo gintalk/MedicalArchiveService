@@ -21,9 +21,9 @@ import org.hl7.fhir.dstu3.model.Type;
 public class Logic {
     
     public static void main(String[] args) {
-        ObservationEntity omop = ObservationDModel.INSTANCE.getObservation(1);
+        MeasurementEntity omop = MeasurementDModel.INSTANCE.getMeasurement(2);
         System.out.println(omop);
-        System.out.println(ObservationOModel.INSTANCE.constructOmop(ObservationFModel.INSTANCE.constructFhir(omop)));
+        System.out.println(MeasurementOModel.INSTANCE.constructOmop(ObservationFModel.INSTANCE.constructFhir(omop)));
     
 //        FhirContext fhirContext = FhirContext.forDstu3();
 //        System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(ObservationFModel.INSTANCE.constructFhir(ObservationDModel.INSTANCE.getObservation(1))));
