@@ -7,10 +7,7 @@
 
 import ca.uhn.fhir.context.FhirContext;
 import com.vgu.cs.engine.entity.*;
-import com.vgu.cs.ma.service.model.business.fhir.EncounterFModel;
-import com.vgu.cs.ma.service.model.business.fhir.LocationFModel;
-import com.vgu.cs.ma.service.model.business.fhir.MedicationStatementFModel;
-import com.vgu.cs.ma.service.model.business.fhir.ObservationFModel;
+import com.vgu.cs.ma.service.model.business.fhir.*;
 import com.vgu.cs.ma.service.model.business.omop.*;
 import com.vgu.cs.ma.service.model.data.*;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -21,9 +18,9 @@ import org.hl7.fhir.dstu3.model.Type;
 public class Logic {
     
     public static void main(String[] args) {
-        MeasurementEntity omop = MeasurementDModel.INSTANCE.getMeasurement(2);
+        ProviderEntity omop = ProviderDModel.INSTANCE.getProvider(1);
         System.out.println(omop);
-        System.out.println(MeasurementOModel.INSTANCE.constructOmop(ObservationFModel.INSTANCE.constructFhir(omop)));
+        System.out.println(ProviderOModel.INSTANCE.constructOmop(PractitionerFModel.INSTANCE.constructFhir(omop)));
     
 //        FhirContext fhirContext = FhirContext.forDstu3();
 //        System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(ObservationFModel.INSTANCE.constructFhir(ObservationDModel.INSTANCE.getObservation(1))));

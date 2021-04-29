@@ -19,6 +19,9 @@ public class ConceptDModel {
     }
     
     public ConceptEntity getConcept(int conceptId) {
+        if(conceptId <= 0){
+            return null;
+        }
         return ConceptDal.INSTANCE.get(conceptId);
     }
     

@@ -77,7 +77,11 @@ public class PractitionerFModel {
      * providers in the US by the Centers for Medicare and Medicaid Services (CMS).
      */
     private void _addIdentifier(Practitioner practitioner, ProviderEntity provider) {
-        practitioner.addIdentifier(new Identifier().setValue(provider.npi));
+        Identifier identifier  = new Identifier();
+        identifier.setValue(provider.npi);
+        identifier.setId(provider.provider_source_value);
+        
+        practitioner.addIdentifier(identifier);
     }
 
     /**
@@ -86,11 +90,7 @@ public class PractitionerFModel {
      * by the DEA, a US federal agency, that allows a provider to write prescriptions for controlled substances.
      */
     private void _addQualification(Practitioner practitioner, ProviderEntity provider) {
-        CodeableConcept deaCodeable = CodeableConceptUtils.fromText(provider.dea);
-        if (deaCodeable == null) {
-            return;
-        }
-        practitioner.addQualification(new PractitionerQualificationComponent(deaCodeable));
+        practitioner.addQualification(new PractitionerQualificationComponent(CodeableConceptUtils.fromText(provider.dea)));
     }
 
     /**
