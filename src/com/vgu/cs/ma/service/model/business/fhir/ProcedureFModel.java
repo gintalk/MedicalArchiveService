@@ -147,7 +147,8 @@ public class ProcedureFModel {
         }
         
         Extension typeExtension = new Extension();
-        typeExtension.setProperty("source-data-type", typeCodeable);
+        typeExtension.setUserData("name", "source-data-type");
+        typeExtension.setValue(typeCodeable);
         
         procedure.addExtension(typeExtension);
     }
@@ -178,7 +179,8 @@ public class ProcedureFModel {
         quantityCodeable.setText(String.valueOf(quantity));
         
         Extension quantityExtension = new Extension();
-        quantityExtension.setProperty("num-of-procedures", quantityCodeable);
+        quantityExtension.setUserData("name", "num-of-procedures");
+        quantityExtension.setValue(quantityCodeable);
         
         procedure.addExtension(quantityExtension);
     }
