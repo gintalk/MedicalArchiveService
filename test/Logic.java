@@ -18,9 +18,9 @@ import org.hl7.fhir.dstu3.model.Type;
 public class Logic {
     
     public static void main(String[] args) {
-        ProcedureOccurrenceEntity omop = ProcedureOccurrenceDModel.INSTANCE.getProcedureOccurrence(3);
+        DeviceExposureEntity omop = DeviceExposureDModel.INSTANCE.getDeviceExposure(3);
         System.out.println(omop);
-        System.out.println(ProcedureOccurrenceOModel.INSTANCE.constructOmop(ProcedureFModel.INSTANCE.constructFhir(omop)));
+        System.out.println(DeviceExposureOModel.INSTANCE.constructOmop(ProcedureFModel.INSTANCE.constructFhir(omop)));
     
 //        FhirContext fhirContext = FhirContext.forDstu3();
 //        System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(ObservationFModel.INSTANCE.constructFhir(ObservationDModel.INSTANCE.getObservation(1))));

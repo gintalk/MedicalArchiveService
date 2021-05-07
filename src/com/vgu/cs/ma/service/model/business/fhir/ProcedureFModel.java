@@ -122,8 +122,8 @@ public class ProcedureFModel {
      * When the procedure was performed.
      */
     private void _addPerformedPeriod(Procedure procedure, DeviceExposureEntity deviceExposure) {
-        Period period = procedure.getPerformedPeriod();
-        
+        Period period = new Period();
+
         Date start = DateTimeUtils.parseDateOrDateTime(deviceExposure.device_exposure_start_date, deviceExposure.device_exposure_start_datetime);
         if (start != null) {
             period.setStart(start);
@@ -133,6 +133,8 @@ public class ProcedureFModel {
         if (end != null) {
             period.setEnd(end);
         }
+
+        procedure.setPerformed(period);
     }
     
     /**

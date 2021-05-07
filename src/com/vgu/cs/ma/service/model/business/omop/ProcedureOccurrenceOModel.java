@@ -28,8 +28,6 @@ public class ProcedureOccurrenceOModel {
      * Unretained fields include:
      * - procedure_datetime
      * - visit_occurrence_id
-     * @param procedure
-     * @return
      */
     public ProcedureOccurrenceEntity constructOmop(Procedure procedure) {
         ProcedureOccurrenceEntity procedureOccurrence = new ProcedureOccurrenceEntity();
