@@ -144,7 +144,9 @@ public class SpecimenFModel {
         if (quantityCodeable == null) {
             return;
         }
-        
+
+        quantity.setCode(String.valueOf(oSpecimen.unit_concept_id));
+        quantity.setId(oSpecimen.unit_source_value);
         quantity.setSystem(quantityCodeable.getCodingFirstRep().getSystem());
         quantity.setUnit(quantityCodeable.getCodingFirstRep().getDisplay());
         
