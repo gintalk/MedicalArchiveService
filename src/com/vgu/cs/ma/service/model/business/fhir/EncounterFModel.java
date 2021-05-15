@@ -9,7 +9,7 @@ package com.vgu.cs.ma.service.model.business.fhir;
 
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
-import com.vgu.cs.engine.entity.VisitOccurrenceEntity;
+import com.vgu.cs.engine.entity.omop.VisitOccurrenceEntity;
 import com.vgu.cs.ma.service.model.business.omop.CareSiteOModel;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;

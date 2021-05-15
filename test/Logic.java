@@ -6,28 +6,30 @@
  */
 
 import ca.uhn.fhir.context.FhirContext;
-import com.vgu.cs.engine.entity.*;
-import com.vgu.cs.ma.service.model.business.fhir.*;
-import com.vgu.cs.ma.service.model.business.omop.*;
-import com.vgu.cs.ma.service.model.data.*;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Quantity;
-import org.hl7.fhir.dstu3.model.StringType;
-import org.hl7.fhir.dstu3.model.Type;
+import com.vgu.cs.ma.service.model.business.fhir.PatientFModel;
+import com.vgu.cs.ma.service.model.data.dhis2.TrackedEntityDModel;
 
 public class Logic {
-    
+
     public static void main(String[] args) {
-        SpecimenEntity omop = SpecimenDModel.INSTANCE.getSpecimen(1);
-        System.out.println(omop);
-        System.out.println(SpecimenOModel.INSTANCE.constructOmop(SpecimenFModel.INSTANCE.constructFhir(omop)));
-    
-//        FhirContext fhirContext = FhirContext.forDstu3();
+//        SpecimenEntity omop = SpecimenDModel.INSTANCE.getSpecimen(1);
+//        System.out.println(omop);
+//        System.out.println(SpecimenOModel.INSTANCE.constructOmop(SpecimenFModel.INSTANCE.constructFhir(omop)));
+
+        FhirContext fhirContext = FhirContext.forDstu3();
 //        System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(ObservationFModel.INSTANCE.constructFhir(ObservationDModel.INSTANCE.getObservation(1))));
-        
+
 //        Type type = new StringType();
 //        System.out.println(type.fhirType());
-        
+
+//        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstances("DiszpKrYNg8"));
+//        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("uzAHOzbzxTa").getUniqueIdAttribute());
+        System.out.println(
+                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
+                        PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("uzAHOzbzxTa"))
+                )
+        );
+
         System.exit(0);
     }
 }

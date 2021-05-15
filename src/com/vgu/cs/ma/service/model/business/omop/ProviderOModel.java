@@ -9,9 +9,9 @@ package com.vgu.cs.ma.service.model.business.omop;
 
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.common.util.DateTimeUtils;
-import com.vgu.cs.engine.entity.ProviderEntity;
-import com.vgu.cs.ma.service.model.data.ConceptDModel;
-import com.vgu.cs.ma.service.model.data.ProviderDModel;
+import com.vgu.cs.engine.entity.omop.ProviderEntity;
+import com.vgu.cs.ma.service.model.data.omop.ConceptDModel;
+import com.vgu.cs.ma.service.model.data.omop.ProviderDModel;
 import org.hl7.fhir.dstu3.model.Enumerations;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Practitioner;

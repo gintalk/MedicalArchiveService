@@ -1,8 +1,7 @@
 package com.vgu.cs.ma.service.model.business.fhir;
 
 import com.vgu.cs.common.util.DateTimeUtils;
-import com.vgu.cs.common.util.StringUtils;
-import com.vgu.cs.engine.entity.DeathEntity;
+import com.vgu.cs.engine.entity.omop.DeathEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.AdverseEvent;

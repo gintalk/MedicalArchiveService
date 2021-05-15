@@ -9,9 +9,9 @@ package com.vgu.cs.ma.service.util;
 
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.common.util.StringUtils;
-import com.vgu.cs.engine.entity.ConceptEntity;
-import com.vgu.cs.ma.service.model.data.ConceptDModel;
-import com.vgu.cs.ma.service.model.data.FhirOmopVocabularyMapDModel;
+import com.vgu.cs.engine.entity.omop.ConceptEntity;
+import com.vgu.cs.ma.service.model.data.omop.ConceptDModel;
+import com.vgu.cs.ma.service.model.data.omop.FhirOmopVocabularyMapDModel;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 

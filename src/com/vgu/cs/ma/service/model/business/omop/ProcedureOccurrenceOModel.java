@@ -9,7 +9,7 @@ package com.vgu.cs.ma.service.model.business.omop;
 
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.common.util.DateTimeUtils;
-import com.vgu.cs.engine.entity.ProcedureOccurrenceEntity;
+import com.vgu.cs.engine.entity.omop.ProcedureOccurrenceEntity;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.DateTimeType;

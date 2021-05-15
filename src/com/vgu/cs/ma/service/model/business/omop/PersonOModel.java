@@ -10,9 +10,9 @@ package com.vgu.cs.ma.service.model.business.omop;
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
-import com.vgu.cs.engine.entity.PersonEntity;
+import com.vgu.cs.engine.entity.omop.PersonEntity;
 import com.vgu.cs.ma.service.model.business.fhir.PatientFModel;
-import com.vgu.cs.ma.service.model.data.ConceptDModel;
+import com.vgu.cs.ma.service.model.data.omop.ConceptDModel;
 import org.hl7.fhir.dstu3.model.*;
 
 import java.util.Date;

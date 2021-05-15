@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.data;
+package com.vgu.cs.ma.service.model.data.omop;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -9,7 +9,7 @@ package com.vgu.cs.ma.service.model.data;
 
 import com.vgu.cs.common.logger.VLogger;
 import com.vgu.cs.engine.dal.LocationDal;
-import com.vgu.cs.engine.entity.LocationEntity;
+import com.vgu.cs.engine.entity.omop.LocationEntity;
 import org.apache.logging.log4j.Logger;
 
 public class LocationDModel {

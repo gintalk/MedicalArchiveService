@@ -8,8 +8,8 @@ package com.vgu.cs.ma.service.model.business.omop;
  */
 
 import com.vgu.cs.common.util.ConvertUtils;
-import com.vgu.cs.engine.entity.CareSiteEntity;
-import com.vgu.cs.ma.service.model.data.CareSiteDModel;
+import com.vgu.cs.engine.entity.omop.CareSiteEntity;
+import com.vgu.cs.ma.service.model.data.omop.CareSiteDModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.IdType;

@@ -5,20 +5,31 @@
  * @author namnh16 on 07/03/2021
  */
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.client.api.IGenericClient;
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hisp.dhis.Dhis2;
+import org.hisp.dhis.Dhis2Config;
+import org.hisp.dhis.model.OrgUnit;
+import org.hisp.dhis.model.TrackedEntityAttribute;
+import org.hisp.dhis.query.Query;
+
+import java.util.List;
 
 public class Client {
 
     public static void main(String[] args) {
-        FhirContext fhirContext = FhirContext.forDstu3();
+        Dhis2Config config = new Dhis2Config(
+                "https://play.dhis2.org/2.36.0",
+                "admin",
+                "district"
+        );
 
-        IGenericClient client = fhirContext.newRestfulGenericClient("http://hapi.fhir.org/baseDstu3");
-
-        Patient patient = client.read().resource(Patient.class).withId("2238758").execute();
-
-        String string = fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(patient);
-        System.out.println(string);
+        Dhis2 client = new Dhis2(config);
+        try {
+            List<OrgUnit> orgUnitGroups = client.getOrgUnits(Query.instance());
+            for(OrgUnit orgUnitGroup: orgUnitGroups){
+                System.out.println(orgUnitGroup);
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

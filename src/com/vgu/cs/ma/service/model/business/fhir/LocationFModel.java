@@ -7,8 +7,8 @@ package com.vgu.cs.ma.service.model.business.fhir;
  * @author namnh16 on 10/03/2021
  */
 
-import com.vgu.cs.engine.entity.CareSiteEntity;
-import com.vgu.cs.engine.entity.LocationEntity;
+import com.vgu.cs.engine.entity.omop.CareSiteEntity;
+import com.vgu.cs.engine.entity.omop.LocationEntity;
 import com.vgu.cs.ma.service.model.business.omop.LocationOModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.IdType;

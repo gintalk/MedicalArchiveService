@@ -8,9 +8,9 @@ package com.vgu.cs.ma.service.model.business.fhir;
  */
 
 import com.vgu.cs.common.util.DateTimeUtils;
-import com.vgu.cs.engine.entity.ConceptEntity;
-import com.vgu.cs.engine.entity.ProviderEntity;
-import com.vgu.cs.ma.service.model.data.ConceptDModel;
+import com.vgu.cs.engine.entity.omop.ConceptEntity;
+import com.vgu.cs.engine.entity.omop.ProviderEntity;
+import com.vgu.cs.ma.service.model.data.omop.ConceptDModel;
 import com.vgu.cs.ma.service.util.CodeableConceptUtils;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Practitioner.PractitionerQualificationComponent;

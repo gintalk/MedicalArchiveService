@@ -9,7 +9,7 @@ package com.vgu.cs.ma.service.model.business.omop;
 
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.engine.dal.LocationDal;
-import com.vgu.cs.engine.entity.LocationEntity;
+import com.vgu.cs.engine.entity.omop.LocationEntity;
 import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.Location;
 

@@ -1,4 +1,4 @@
-package com.vgu.cs.ma.service.model.data;
+package com.vgu.cs.ma.service.model.data.omop;
 
 /*
  * Copyright (c) 2012-2016 by Zalo Group.
@@ -8,7 +8,7 @@ package com.vgu.cs.ma.service.model.data;
  */
 
 import com.vgu.cs.engine.dal.DeviceExposureDal;
-import com.vgu.cs.engine.entity.DeviceExposureEntity;
+import com.vgu.cs.engine.entity.omop.DeviceExposureEntity;
 
 public class DeviceExposureDModel {
 
