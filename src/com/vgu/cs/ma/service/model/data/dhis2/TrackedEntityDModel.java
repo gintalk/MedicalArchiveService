@@ -12,6 +12,7 @@ import com.vgu.cs.engine.entity.dhis2.model.TrackedEntityInstance;
 import com.vgu.cs.engine.entity.dhis2.model.TrackedEntityInstances;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TrackedEntityDModel extends Dhis2BaseModel {
@@ -22,22 +23,32 @@ public class TrackedEntityDModel extends Dhis2BaseModel {
 
     }
 
-    public TrackedEntityInstances getTrackedEntityInstances(String orgUnitId) {
+    /**
+     * Paging is not yet supported, only the first 50 results are returned
+     *
+     * @param orgUnitId: ID of the responsible Organisation Unit
+     * @return List of Tracked Entity Instances associated with the Organisation Unit identified by <code>orgUnitId</code>
+     */
+    public List<TrackedEntityInstance> getTrackedEntityInstances(String orgUnitId) {
         Map<String, String> query = new HashMap<>();
         query.put("ou", orgUnitId);
 
-        return get("trackedEntityInstances", query, TrackedEntityInstances.class);
+        return getJsonList("trackedEntityInstances", query, TrackedEntityInstances.class).getTrackedEntityInstances();
     }
 
-    public TrackedEntityInstance getTrackedEntityInstance(String tei){
+    /**
+     * @param tei: ID of the Tracked Entity Instance
+     * @return The Tracked Entity Instance identified by <code>tei</code>
+     */
+    public TrackedEntityInstance getTrackedEntityInstance(String tei) {
         Map<String, String> query = new HashMap<>();
         query.put("trackedEntityInstance", tei);
 
-        TrackedEntityInstances instances = get("trackedEntityInstances", query, TrackedEntityInstances.class);
-        if(instances == null || CollectionUtils.isNullOrEmpty(instances.trackedEntityInstances)){
+        TrackedEntityInstances instances = getJsonList("trackedEntityInstances", query, TrackedEntityInstances.class);
+        if (instances == null || CollectionUtils.isNullOrEmpty(instances.getTrackedEntityInstances())) {
             return null;
         }
 
-        return instances.trackedEntityInstances.get(0);
+        return instances.getTrackedEntityInstances().get(0);
     }
 }

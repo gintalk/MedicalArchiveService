@@ -8,6 +8,7 @@
 import ca.uhn.fhir.context.FhirContext;
 import com.vgu.cs.ma.service.model.business.fhir.PatientFModel;
 import com.vgu.cs.ma.service.model.data.dhis2.TrackedEntityDModel;
+import com.vgu.cs.ma.service.model.data.dhis2.UserDModel;
 
 public class Logic {
 
@@ -24,11 +25,12 @@ public class Logic {
 
 //        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstances("DiszpKrYNg8"));
 //        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("uzAHOzbzxTa").getUniqueIdAttribute());
-        System.out.println(
-                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
-                        PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("uzAHOzbzxTa"))
-                )
-        );
+//        System.out.println(
+//                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
+//                        PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("k68SkK5yDH9"))
+//                )
+//        );
+        System.out.println(UserDModel.INSTANCE.getUser("NqCK1Xc93yx"));
 
         System.exit(0);
     }

@@ -21,9 +21,13 @@ public abstract class Dhis2BaseModel {
     protected final String BASE_URL = "https://play.dhis2.org/2.36.0/api/";
     protected final String USERNAME = "admin";
     protected final String PASSWORD = "district";
-    private final Gson GSON = new Gson();
+    protected final Gson GSON = new Gson();
 
-    protected <T extends BaseDhis2Entity> T get(String resourceType, Map<String, String> query, Class<T> tClass) {
+    protected <T extends BaseDhis2Entity> T getJsonList(String resourceType, Class<T> tClass) {
+        return getJsonList(resourceType, new HashMap<>(), tClass);
+    }
+
+    protected <T extends BaseDhis2Entity> T getJsonList(String resourceType, Map<String, String> query, Class<T> tClass) {
         StringBuilder urlBuilder = new StringBuilder(BASE_URL)
                 .append(resourceType)
                 .append(".json")
@@ -34,7 +38,7 @@ public abstract class Dhis2BaseModel {
         }
         urlBuilder.deleteCharAt(urlBuilder.length() - 1);
 
-        String response = HttpUtils.sendGet(urlBuilder.toString(), _prepareHeaderWithBasicAuth());
+        String response = HttpUtils.sendGet(urlBuilder.toString(), prepareHeaderWithBasicAuth());
         if (StringUtils.isNullOrEmpty(response)) {
             return null;
         }
@@ -42,7 +46,7 @@ public abstract class Dhis2BaseModel {
         return GSON.fromJson(response, tClass);
     }
 
-    protected Map<String, String> _prepareHeaderWithBasicAuth() {
+    protected Map<String, String> prepareHeaderWithBasicAuth() {
         Map<String, String> headers = new HashMap<>();
         headers.put(
                 "Authorization",

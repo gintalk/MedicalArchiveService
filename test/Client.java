@@ -24,10 +24,11 @@ public class Client {
 
         Dhis2 client = new Dhis2(config);
         try {
-            List<OrgUnit> orgUnitGroups = client.getOrgUnits(Query.instance());
-            for(OrgUnit orgUnitGroup: orgUnitGroups){
-                System.out.println(orgUnitGroup);
-            }
+//            List<OrgUnit> orgUnitGroups = client.getOrgUnits(Query.instance());
+//            for(OrgUnit orgUnitGroup: orgUnitGroups){
+//                System.out.println(orgUnitGroup);
+//            }
+            System.out.println(client.getProgram("fDd25txQckK"));
         } catch(Exception e){
             e.printStackTrace();
         }
