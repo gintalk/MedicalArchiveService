@@ -40,9 +40,10 @@ public class TrackedEntityDModel extends Dhis2BaseModel {
      * @param tei: ID of the Tracked Entity Instance
      * @return The Tracked Entity Instance identified by <code>tei</code>
      */
-    public TrackedEntityInstance getTrackedEntityInstance(String tei) {
+    public TrackedEntityInstance getTrackedEntityInstance(String tei, String programId) {
         Map<String, String> query = new HashMap<>();
         query.put("trackedEntityInstance", tei);
+        query.put("program", programId);
 
         TrackedEntityInstances instances = getJsonList("trackedEntityInstances", query, TrackedEntityInstances.class);
         if (instances == null || CollectionUtils.isNullOrEmpty(instances.getTrackedEntityInstances())) {

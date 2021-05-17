@@ -3,6 +3,7 @@ package com.vgu.cs.ma.service.model.business.fhir;
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.common.util.StringUtils;
+import com.vgu.cs.engine.entity.dhis2.model.TrackedEntityAttribute;
 import com.vgu.cs.engine.entity.dhis2.model.TrackedEntityInstance;
 import com.vgu.cs.engine.entity.omop.ConceptEntity;
 import com.vgu.cs.engine.entity.omop.PersonEntity;
@@ -21,6 +22,7 @@ import org.hl7.fhir.dstu3.model.StringType;
 
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * <p>
@@ -74,8 +76,10 @@ public class PatientFModel {
         Patient patient = new Patient();
 
         _addIdentifier(patient, ConvertUtils.toInteger(tei.getUniqueIdAttribute().getValue()), tei.getId());
+        _addBirthDate(patient, tei.getBirthDateAttribute());
         _addName(patient, tei.getFirstNameAttribute().getValue(), tei.getLastNameAttribute().getValue());
-        _addAddress(patient, tei.getAddressAttribute().getValue(), tei.getCityAttribute().getValue());
+        _addGender(patient, tei.getGenderAttribute().getValue());
+        _addAddress(patient, tei.getAddressAttribute().getValue(), tei.getCityAttribute().getValue(), tei.getStateAttribute().getValue());
 
         return patient;
     }
@@ -125,6 +129,15 @@ public class PatientFModel {
         }
     }
 
+    private void _addBirthDate(Patient patient, TrackedEntityAttribute birthDateAttribute) {
+        if (StringUtils.isNullOrEmpty(birthDateAttribute.getValue())) {
+            return;
+        }
+
+        Date date = DateTimeUtils.parse("yyyy-MM-dd", birthDateAttribute.getValue());
+        patient.setBirthDate(date);
+    }
+
     /**
      * Corresponding FHIR field: Patient.generalPractitioner
      * Patient's nominated primary care provider. PERSON.provider_id refers to the last known primary care provider.
@@ -151,6 +164,14 @@ public class PatientFModel {
         }
     }
 
+    private void _addGender(Patient patient, String genderString) {
+        if (StringUtils.isNullOrEmpty(genderString)) {
+            patient.setGender(AdministrativeGender.NULL);
+        } else {
+            patient.setGender(AdministrativeGender.fromCode(genderString.toLowerCase()));
+        }
+    }
+
     /**
      * Corresponding FHIR field: Patient.address
      * An address for the individual. PERSON.location_id refers to the physical address of the person. This field
@@ -160,10 +181,11 @@ public class PatientFModel {
         patient.addAddress(LocationOModel.INSTANCE.getAddress(person.location_id));
     }
 
-    private void _addAddress(Patient patient, String addressLine, String city) {
+    private void _addAddress(Patient patient, String addressLine, String city, String state) {
         Address address = new Address();
         address.setLine(Collections.singletonList(new StringType(addressLine)));
         address.setCity(city);
+        address.setState(state);
 
         patient.addAddress(address);
     }

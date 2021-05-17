@@ -34,7 +34,7 @@ public abstract class Dhis2BaseModel {
                 .append("?");
 
         for (Map.Entry<String, String> entry : query.entrySet()) {
-            urlBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("?");
+            urlBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         urlBuilder.deleteCharAt(urlBuilder.length() - 1);
 

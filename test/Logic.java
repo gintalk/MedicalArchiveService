@@ -18,21 +18,22 @@ public class Logic {
 //        System.out.println(omop);
 //        System.out.println(SpecimenOModel.INSTANCE.constructOmop(SpecimenFModel.INSTANCE.constructFhir(omop)));
 
-//        FhirContext fhirContext = FhirContext.forDstu3();
+        FhirContext fhirContext = FhirContext.forDstu3();
 //        System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(ObservationFModel.INSTANCE.constructFhir(ObservationDModel.INSTANCE.getObservation(1))));
 
 //        Type type = new StringType();
 //        System.out.println(type.fhirType());
 
 //        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstances("DiszpKrYNg8"));
-//        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("pidFgJzBLUn"));
-//        System.out.println(
-//                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
-//                        PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("k68SkK5yDH9"))
-//                )
-//        );
+//        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("DI01lBI4L2f", "ur1Edk5Oe2n"));
+//        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("r6Wc56APuCL", "ur1Edk5Oe2n"));
+        System.out.println(
+                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
+                        PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("DI01lBI4L2f", "ur1Edk5Oe2n"))
+                )
+        );
 //        System.out.println(UserDModel.INSTANCE.getUser("NqCK1Xc93yx"));
-        System.out.println(EventDModel.INSTANCE.getEvent("pidFgJzBLUn"));
+        System.out.println(EventDModel.INSTANCE.getEvent("DI01lBI4L2f"));
 
         System.exit(0);
     }
