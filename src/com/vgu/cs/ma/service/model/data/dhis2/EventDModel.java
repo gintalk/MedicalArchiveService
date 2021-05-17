@@ -1,0 +1,44 @@
+package com.vgu.cs.ma.service.model.data.dhis2;
+
+/*
+ * Copyright (c) 2012-2016 by Zalo Group.
+ * All Rights Reserved.
+ *
+ * @author namnh16 on 16/05/2021
+ */
+
+import com.vgu.cs.common.util.CollectionUtils;
+import com.vgu.cs.engine.entity.dhis2.model.Event;
+import com.vgu.cs.engine.entity.dhis2.model.Events;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class EventDModel extends Dhis2BaseModel {
+
+    public static final EventDModel INSTANCE = new EventDModel();
+
+    private EventDModel() {
+
+    }
+
+    public List<Event> getEvents(String orgUnitId) {
+        Map<String, String> query = new HashMap<>();
+        query.put("orgUnit", orgUnitId);
+
+        return getJsonList("events", query, Events.class).getEvents();
+    }
+
+    public Event getEvent(String trackedEntityInstanceId) {
+        Map<String, String> query = new HashMap<>();
+        query.put("trackedEntityInstance", trackedEntityInstanceId);
+
+        Events events = getJsonList("events", query, Events.class);
+        if (events == null || CollectionUtils.isNullOrEmpty(events.getEvents())) {
+            return null;
+        }
+
+        return events.getEvents().get(0);
+    }
+}
