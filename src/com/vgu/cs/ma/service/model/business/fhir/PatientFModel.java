@@ -19,6 +19,7 @@ import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.exceptions.FHIRException;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -79,7 +80,7 @@ public class PatientFModel {
         _addBirthDate(patient, tei.getBirthDateAttribute());
         _addName(patient, tei.getFirstNameAttribute().getValue(), tei.getLastNameAttribute().getValue());
         _addGender(patient, tei.getGenderAttribute().getValue());
-        _addAddress(patient, tei.getAddressAttribute().getValue(), tei.getCityAttribute().getValue(), tei.getStateAttribute().getValue());
+        _addAddress(patient, tei.getAddressAttribute().getValue(), tei.getCityAttribute().getValue(), tei.getStateAttribute().getValue(), tei.getZipCodeAttribute().getValue());
 
         return patient;
     }
@@ -165,10 +166,10 @@ public class PatientFModel {
     }
 
     private void _addGender(Patient patient, String genderString) {
-        if (StringUtils.isNullOrEmpty(genderString)) {
-            patient.setGender(AdministrativeGender.NULL);
-        } else {
+        try {
             patient.setGender(AdministrativeGender.fromCode(genderString.toLowerCase()));
+        } catch (FHIRException ex) {
+            patient.setGender(AdministrativeGender.UNKNOWN);
         }
     }
 
@@ -181,11 +182,11 @@ public class PatientFModel {
         patient.addAddress(LocationOModel.INSTANCE.getAddress(person.location_id));
     }
 
-    private void _addAddress(Patient patient, String addressLine, String city, String state) {
+    private void _addAddress(Patient patient, String addressLine, String city, String state, String zipCode) {
         Address address = new Address();
         address.setLine(Collections.singletonList(new StringType(addressLine)));
         address.setCity(city);
-        address.setState(state);
+        address.setPostalCode(zipCode);
 
         patient.addAddress(address);
     }

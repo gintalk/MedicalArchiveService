@@ -23,16 +23,17 @@ public class EventDModel extends Dhis2BaseModel {
 
     }
 
-    public List<Event> getEvents(String orgUnitId) {
+    public List<Event> getEvents(String trackedEntityInstanceId, String programId) {
         Map<String, String> query = new HashMap<>();
-        query.put("orgUnit", orgUnitId);
+        query.put("trackedEntityInstance", trackedEntityInstanceId);
+        query.put("program", programId);
 
         return getJsonList("events", query, Events.class).getEvents();
     }
 
-    public Event getEvent(String trackedEntityInstanceId) {
+    public Event getEvent(String eventId) {
         Map<String, String> query = new HashMap<>();
-        query.put("trackedEntityInstance", trackedEntityInstanceId);
+        query.put("event", eventId);
 
         Events events = getJsonList("events", query, Events.class);
         if (events == null || CollectionUtils.isNullOrEmpty(events.getEvents())) {

@@ -28,6 +28,8 @@ public abstract class Dhis2BaseModel {
     }
 
     protected <T extends BaseDhis2Entity> T getJsonList(String resourceType, Map<String, String> query, Class<T> tClass) {
+        query.put("fields", "*");
+
         StringBuilder urlBuilder = new StringBuilder(BASE_URL)
                 .append(resourceType)
                 .append(".json")
