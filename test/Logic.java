@@ -6,12 +6,10 @@
  */
 
 import ca.uhn.fhir.context.FhirContext;
-import com.vgu.cs.ma.service.model.business.fhir.LocationFModel;
+import com.google.gson.Gson;
+import com.vgu.cs.ma.service.model.business.dhis2.TrackedEntityInstanceModel;
 import com.vgu.cs.ma.service.model.business.fhir.PatientFModel;
-import com.vgu.cs.ma.service.model.data.dhis2.EventDModel;
-import com.vgu.cs.ma.service.model.data.dhis2.OrgUnitDModel;
 import com.vgu.cs.ma.service.model.data.dhis2.TrackedEntityDModel;
-import com.vgu.cs.ma.service.model.data.dhis2.UserDModel;
 
 public class Logic {
 
@@ -30,18 +28,20 @@ public class Logic {
 //        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("Qk90XyD07T9", "ur1Edk5Oe2n"));
 //        System.out.println(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("r6Wc56APuCL", "ur1Edk5Oe2n"));
 //        System.out.println(
-//                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
-//                        PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("Qk90XyD07T9", "ur1Edk5Oe2n"))
-//                )
+//            fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
+//                PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("i6Qfg7z2yGR", "ur1Edk5Oe2n"))
+//            )
 //        );
+
+        System.out.println(TrackedEntityInstanceModel.INSTANCE.constructDhis2(PatientFModel.INSTANCE.constructFhir(TrackedEntityDModel.INSTANCE.getTrackedEntityInstance("i6Qfg7z2yGR", "ur1Edk5Oe2n"))));
 //        System.out.println(UserDModel.INSTANCE.getUser("NqCK1Xc93yx"));
 //        System.out.println(EventDModel.INSTANCE.getEvent("wiTqM8Q51TF"));
 
-        System.out.println(
-                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
-                        LocationFModel.INSTANCE.constructFhir(OrgUnitDModel.INSTANCE.getOrgUnit("TQ5DSmdliN7"))
-                )
-        );
+//        System.out.println(
+//                fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(
+//                        LocationFModel.INSTANCE.constructFhir(OrgUnitDModel.INSTANCE.getOrgUnit("TQ5DSmdliN7"))
+//                )
+//        );
 
         System.exit(0);
     }

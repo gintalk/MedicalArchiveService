@@ -65,6 +65,7 @@ public class LocationFModel {
     public Location constructFhir(OrganisationUnit orgUnit) {
         Location location = new Location();
 
+        _addRandomId(location);
         _addName(location, orgUnit.getName());
 
         return location;
@@ -79,6 +80,10 @@ public class LocationFModel {
      */
     private void _addId(Location fLocation, LocationEntity oLocation) {
         fLocation.setId(new IdType(oLocation.location_id));
+    }
+
+    private void _addRandomId(Location location) {
+        location.setId(IdType.newRandomUuid());
     }
 
     /**

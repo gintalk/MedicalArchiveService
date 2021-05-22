@@ -76,7 +76,7 @@ public class PatientFModel {
     public Patient constructFhir(TrackedEntityInstance tei) {
         Patient patient = new Patient();
 
-        _addIdentifier(patient, ConvertUtils.toInteger(tei.getUniqueIdAttribute().getValue()), tei.getId());
+        _addIdentifier(patient, ConvertUtils.toInteger(tei.getUniqueIdAttribute().getValue()), tei.getTrackedEntityInstance());
         _addBirthDate(patient, tei.getBirthDateAttribute());
         _addName(patient, tei.getFirstNameAttribute().getValue(), tei.getLastNameAttribute().getValue());
         _addGender(patient, tei.getGenderAttribute().getValue());
