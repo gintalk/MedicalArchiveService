@@ -14,7 +14,7 @@ import com.vgu.cs.engine.entity.dhis2.model.OrganisationUnits;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrgUnitDModel extends Dhis2BaseModel {
+public class OrgUnitDModel extends Dhis2BaseDModel {
 
     public static final OrgUnitDModel INSTANCE = new OrgUnitDModel();
 

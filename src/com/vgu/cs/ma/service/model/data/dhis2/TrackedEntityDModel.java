@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TrackedEntityDModel extends Dhis2BaseModel {
+public class TrackedEntityDModel extends Dhis2BaseDModel {
 
     public static final TrackedEntityDModel INSTANCE = new TrackedEntityDModel();
 

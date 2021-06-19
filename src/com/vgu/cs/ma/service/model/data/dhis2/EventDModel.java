@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EventDModel extends Dhis2BaseModel {
+public class EventDModel extends Dhis2BaseDModel {
 
     public static final EventDModel INSTANCE = new EventDModel();
 

@@ -16,7 +16,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Dhis2BaseModel {
+public abstract class Dhis2BaseDModel {
 
     protected final String BASE_URL = "https://play.dhis2.org/2.36.0/api/";
     protected final String USERNAME = "admin";

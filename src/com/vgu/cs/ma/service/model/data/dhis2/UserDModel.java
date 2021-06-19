@@ -16,7 +16,7 @@ import com.vgu.cs.engine.entity.dhis2.model.Users;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDModel extends Dhis2BaseModel {
+public class UserDModel extends Dhis2BaseDModel {
 
     public static final UserDModel INSTANCE = new UserDModel();
 
