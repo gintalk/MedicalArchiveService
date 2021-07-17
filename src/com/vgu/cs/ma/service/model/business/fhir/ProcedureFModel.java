@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.business.fhir;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 20/03/2021
- */
-
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.engine.entity.omop.DeviceExposureEntity;
 import com.vgu.cs.engine.entity.omop.ProcedureOccurrenceEntity;
@@ -31,7 +24,6 @@ import java.util.Date;
  * <code>DeviceExposureEntity</code>, and returns a FHIR-compliant <code>Procedure</code>.
  * </p>
  *
- * @author namnh16 on 05/03/2021
  * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#PROCEDURE_OCCURRENCE">OMOP PROCEDURE_OCCURRENCE</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#DEVICE_EXPOSURE">OMOP DEVICE_EXPOSURE</a>

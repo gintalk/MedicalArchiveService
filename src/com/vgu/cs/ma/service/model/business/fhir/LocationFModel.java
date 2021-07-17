@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.business.fhir;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 10/03/2021
- */
-
 import com.vgu.cs.engine.entity.dhis2.model.OrganisationUnit;
 import com.vgu.cs.engine.entity.omop.CareSiteEntity;
 import com.vgu.cs.engine.entity.omop.LocationEntity;
@@ -29,7 +22,6 @@ import org.hl7.fhir.dstu3.model.Location;
  * <code>LocationEntity</code>, and returns a FHIR-compliant <code>Location</code>.
  * </p>
  *
- * @author namnh16 on 05/03/2021
  * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#CARE_SITE">OMOP CARE_SITE</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#LOCATION">OMOP LOCATION</a>

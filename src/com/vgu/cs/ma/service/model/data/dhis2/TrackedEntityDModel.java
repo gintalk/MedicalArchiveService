@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.data.dhis2;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 13/05/2021
- */
-
 import com.vgu.cs.common.util.CollectionUtils;
 import com.vgu.cs.engine.entity.dhis2.model.TrackedEntityInstance;
 import com.vgu.cs.engine.entity.dhis2.model.TrackedEntityInstances;

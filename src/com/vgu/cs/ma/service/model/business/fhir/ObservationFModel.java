@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.business.fhir;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 20/03/2021
- */
-
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.engine.entity.omop.MeasurementEntity;
 import com.vgu.cs.engine.entity.omop.ObservationEntity;
@@ -31,7 +24,6 @@ import java.util.Date;
  * or a <code>MeasurementEntity</code>, and returns a FHIR-compliant <code>Observation</code>.
  * </p>
  *
- * @author namnh16 on 05/03/2021
  * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#OBSERVATION">OMOP OBSERVATION</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#MEASUREMENT">OMOP MEASUREMENT</a>

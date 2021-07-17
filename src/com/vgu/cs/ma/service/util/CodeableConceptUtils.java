@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.util;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 19/03/2021
- */
-
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.common.util.StringUtils;
 import com.vgu.cs.engine.entity.omop.ConceptEntity;

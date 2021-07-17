@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.business.fhir;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 20/03/2021
- */
-
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.engine.entity.omop.DrugExposureEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
@@ -34,7 +27,6 @@ import java.util.Date;
  * FHIR-compliant <code>MedicationStatement</code>.
  * </p>
  *
- * @author namnh16 on 05/03/2021
  * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#DRUG_EXPOSURE">OMOP DRUG_EXPOSURE</a>
  * @see <a href="https://www.hl7.org/fhir/medicationstatement.html">FHIR Medication Statement</a>

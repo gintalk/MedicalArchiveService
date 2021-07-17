@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.util;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 21/04/2021
- */
-
 import com.vgu.cs.common.util.CollectionUtils;
 import org.hl7.fhir.dstu3.model.Base;
 import org.hl7.fhir.dstu3.model.CodeableConcept;

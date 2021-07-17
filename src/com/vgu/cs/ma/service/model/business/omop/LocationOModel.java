@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.business.omop;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 16/03/2021
- */
-
 import com.vgu.cs.common.util.ConvertUtils;
 import com.vgu.cs.engine.dal.LocationDal;
 import com.vgu.cs.engine.entity.omop.LocationEntity;

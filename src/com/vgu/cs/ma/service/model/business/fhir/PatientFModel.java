@@ -38,7 +38,6 @@ import java.util.Date;
  * represents a record in <code>person</code>, and returns a FHIR-compliant <code>Patient</code>.
  * </p>
  *
- * @author namnh16 on 05/03/2021
  * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#PERSON">OMOP PERSON</a>
  * @see <a href="https://www.hl7.org/fhir/patient.html">FHIR Patient</a>

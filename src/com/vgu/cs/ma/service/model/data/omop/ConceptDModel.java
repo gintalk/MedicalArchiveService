@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.data.omop;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 06/03/2021
- */
-
 import com.vgu.cs.engine.dal.ConceptDal;
 import com.vgu.cs.engine.entity.omop.ConceptEntity;
 

@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 07/03/2021
- */
 
 import org.hisp.dhis.Dhis2;
 import org.hisp.dhis.Dhis2Config;

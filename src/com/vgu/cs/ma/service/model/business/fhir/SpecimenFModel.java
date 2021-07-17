@@ -1,12 +1,5 @@
 package com.vgu.cs.ma.service.model.business.fhir;
 
-/*
- * Copyright (c) 2012-2016 by Zalo Group.
- * All Rights Reserved.
- *
- * @author namnh16 on 20/03/2021
- */
-
 import com.vgu.cs.common.util.DateTimeUtils;
 import com.vgu.cs.engine.entity.omop.SpecimenEntity;
 import com.vgu.cs.ma.service.model.business.omop.PersonOModel;
@@ -25,10 +18,9 @@ import java.util.Date;
  * </p>
  * <p>
  * The <code>SpecimenFModel</code> class contains one single public method accepting a <code>SpecimenEntity</code>, which
- * represents a record in <code>spcimen</code>, and returns a FHIR-compliant <code>Specimen</code>.
+ * represents a record in <code>specimen</code>, and returns a FHIR-compliant <code>Specimen</code>.
  * </p>
  *
- * @author namnh16 on 05/03/2021
  * @see <a href="http://build.fhir.org/ig/HL7/cdmh/profiles.html#omop-to-fhir-mappings">OMOP to FHIR mappings</a>
  * @see <a href="https://ohdsi.github.io/CommonDataModel/cdm531.html#SPECIMEN">OMOP SPECIMEN</a>
  * @see <a href="https://www.hl7.org/fhir/specimen.html">FHIR Specimen</a>
