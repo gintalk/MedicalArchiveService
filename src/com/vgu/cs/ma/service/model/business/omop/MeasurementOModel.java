@@ -94,10 +94,10 @@ public class MeasurementOModel {
         }
         
         if (component.getLow() != null) {
-            measurement.range_low = component.getLow().getValue().intValue();
+            measurement.range_low = component.getLow().getValue().doubleValue();
         }
         if (component.getHigh() != null) {
-            measurement.range_high = component.getHigh().getValue().intValue();
+            measurement.range_high = component.getHigh().getValue().doubleValue();
         }
     }
     
